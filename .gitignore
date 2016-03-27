@@ -7,3 +7,15 @@
 # Notes #
 #########
 notebook.md
+
+#####################
+# Behind the scenes #
+#####################
+
+# Python virtulenv and bytecode
+env/
+__pychache__
+
+# Text editor swap files
+*.swp
+

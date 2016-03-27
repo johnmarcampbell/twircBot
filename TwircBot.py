@@ -1,3 +1,7 @@
+import socket
+import sys
+
+
 class TwircBot(object):
     """
     Basic Bot class that reads in a config file, connects to chat rooms,
@@ -25,7 +29,26 @@ class TwircBot(object):
 
     def connect(self):
         """Connect to twitch chat"""
-        print('Pretending to connect.') 
+        user_string = bytes('USER ' + self.nick + ' \r\n', 'utf-8')
+        nick_string = bytes('NICK ' + self.nick + ' \r\n', 'utf-8')
+        oauth_string = bytes('PASS oauth:' + self.oauth + ' \r\n', 'utf-8')
+        cap_req_string = bytes('CAP REQ :twitch.tv/membership \r\n', 'utf-8')
+
+        irc = socket.socket()
+        irc.connect((self.host, self.port))
+        irc.send(user_string) 
+        irc.send(oauth_string) 
+        irc.send(nick_string) 
+        irc.send(cap_req_string) 
+
+        for channels in self.channel_list:
+            channel_string = bytes('JOIN #' + channels + ' \r\n', 'utf-8')
+            irc.send(channel_string) 
+
+        while True: 
+            data = irc.recv(4096)
+            if data:
+                print(data.decode('utf-8'))
 
 
     def print_config(self):

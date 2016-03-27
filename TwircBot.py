@@ -23,6 +23,8 @@ class TwircBot(object):
                 self.nick = line.split()[1]
             elif words[0] == "channels:": 
                 self.channel_list = line.split()[1:]
+            elif words[0] == "log:": 
+                self.log_file_name = line.split()[1]
 
         config_file.close()
 
@@ -49,6 +51,9 @@ class TwircBot(object):
             data = irc.recv(4096)
             if data:
                 print(data.decode('utf-8'))
+                log_file = open(self.log_file_name,"a")
+                log_file.write(data.decode('utf-8'))
+                log_file.close()
 
 
     def print_config(self):
@@ -65,6 +70,8 @@ class TwircBot(object):
         for channels in self.channel_list:
             config_string += str(channels) + ", "
         config_string = config_string[:-2] #Remove last comma and space
+
+        config_string += "\nLog file: " + self.log_file_name
 
         config_string += "\n***** TwircBot config *****\n"
 

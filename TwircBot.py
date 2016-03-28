@@ -12,22 +12,10 @@ class TwircBot(object):
     def __init__(self, config_file_name):
         """Parse the configuration file to retrieve the config parameters """
         self.irc = socket.socket()
-        self.host='irc.twitch.tv'
-        self.port=6667
-        config_file = open(config_file_name,"r")
-
-        for line in config_file:
-            words = line.split()
-            if words[0] == "oauth:": 
-                self.oauth = line.split()[1]
-            elif words[0] == "nick:": 
-                self.nick = line.split()[1]
-            elif words[0] == "channels:": 
-                self.channel_list = line.split()[1:]
-            elif words[0] == "log:": 
-                self.log_file_name = line.split()[1]
-
-        config_file.close()
+        self.host = 'irc.twitch.tv'
+        self.port = 6667
+        self.block_size = 4096
+        self.readConfigFile(config_file_name)
 
     def connect(self):
         """Connect to twitch chat"""
@@ -86,7 +74,7 @@ class TwircBot(object):
     
     def receive(self):
         """Accept some bytes from the socket and return them as a string."""
-        message_bytes = self.irc.recv(4096)
+        message_bytes = self.irc.recv(self.block_size)
         message_string = message_bytes.decode('utf-8')
         return message_string
 
@@ -107,4 +95,20 @@ class TwircBot(object):
             if 'smart' in words:
                 self.privmsg(self.nick, 'You are smart!')
 
-  
+    def readConfigFile(self, config_file_name):
+        """ Read a configuration file and load all the values. """
+        config_file = open(config_file_name,"r")
+
+        for line in config_file:
+            words = line.split()
+            if words[0] == "oauth:": 
+                self.oauth = line.split()[1]
+            elif words[0] == "nick:": 
+                self.nick = line.split()[1]
+            elif words[0] == "channels:": 
+                self.channel_list = line.split()[1:]
+            elif words[0] == "log:": 
+                self.log_file_name = line.split()[1]
+
+        config_file.close()
+

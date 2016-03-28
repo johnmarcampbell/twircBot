@@ -30,9 +30,8 @@ class TwircBot(object):
         self.send(nick_string) 
         self.send(cap_req_string) 
 
-        for channels in self.channel_list:
-            channel_string = 'JOIN #' + channels
-            self.send(channel_string) 
+        for channel in self.channel_list:
+            self.join(channel)
 
         while True: 
             data = self.receive()
@@ -70,7 +69,6 @@ class TwircBot(object):
         """Accept a string, convert it to bytes, and send it."""
         message_bytes = bytes(message_string + '\r\n', 'utf-8')
         self.irc.send(message_bytes)
-
     
     def receive(self):
         """Accept some bytes from the socket and return them as a string."""
@@ -85,6 +83,14 @@ class TwircBot(object):
     def privmsg(self, channel, message):
         """ Send a private message to a particular channel. """
         self.send('PRIVMSG #' + channel + ' :' + message)
+    
+    def join(self, channel):
+        """ Join a channel. """
+        self.send('JOIN #' + channel)
+    
+    def part(self, channel):
+        """ Leave a channel. """
+        self.send('PART #' + channel)
     
     def processData(self, data):
         """ Break up the datastream into lines and decide what to do with them. """

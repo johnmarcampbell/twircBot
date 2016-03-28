@@ -1,5 +1,6 @@
 import socket
 import sys
+import re
 
 
 class TwircBot(object):
@@ -94,11 +95,11 @@ class TwircBot(object):
     
     def processData(self, data):
         """ Break up the datastream into lines and decide what to do with them. """
-        for lines in data.splitlines():
-            words = lines.split()
+        for line in data.splitlines():
+            words = line.split()
             if words[0] == 'PING':
                 self.pong()
-            if 'smart' in words:
+            if re.search('smart', line):
                 self.privmsg(self.nick, 'You are smart!')
 
     def readConfigFile(self, config_file_name):

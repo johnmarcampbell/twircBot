@@ -31,38 +31,39 @@ class TwircBot(object):
 
     def processLine(self, line):
         words = line.split()
-        if words[0] == bytes('PING','utf-8'):
-            self.irc.send(bytes('PONG :tmi.twitch.tv\r\n', 'utf-8'))
+        if words[0] == 'PING':
+            self.send('PONG :tmi.twitch.tv\r\n')
             print('I have received a ping!!')
-            self.irc.send(bytes('PRIVMSG #' + self.nick + ' :I received a PING!!\r\n', 'utf-8'));
+            self.send('PRIVMSG #' + self.nick + ' :I received a PING!!\r\n')
         for word in words:
-            if word == bytes('smart','utf-8'):
-                self.irc.send(bytes('PRIVMSG #' + self.nick + ' :You are smart\r\n', 'utf-8'));
+            if word == 'smart':
+                self.send('PRIVMSG #' + self.nick + ' :You are smart\r\n')
 
 
     def connect(self):
         """Connect to twitch chat"""
-        user_string = bytes('USER ' + self.nick + ' \r\n', 'utf-8')
-        nick_string = bytes('NICK ' + self.nick + ' \r\n', 'utf-8')
-        oauth_string = bytes('PASS oauth:' + self.oauth + ' \r\n', 'utf-8')
-        cap_req_string = bytes('CAP REQ :twitch.tv/membership \r\n', 'utf-8')
+        user_string = 'USER ' + self.nick + ' \r\n'
+        nick_string = 'NICK ' + self.nick + ' \r\n'
+        oauth_string = 'PASS oauth:' + self.oauth + ' \r\n'
+        cap_req_string = 'CAP REQ :twitch.tv/membership \r\n'
 
         self.irc.connect((self.host, self.port))
-        self.irc.send(user_string) 
-        self.irc.send(oauth_string) 
-        self.irc.send(nick_string) 
-        self.irc.send(cap_req_string) 
+        self.send(user_string) 
+        self.send(user_string) 
+        self.send(oauth_string) 
+        self.send(nick_string) 
+        self.send(cap_req_string) 
 
         for channels in self.channel_list:
-            channel_string = bytes('JOIN #' + channels + ' \r\n', 'utf-8')
-            self.irc.send(channel_string) 
+            channel_string = 'JOIN #' + channels + ' \r\n'
+            self.send(channel_string) 
 
         while True: 
-            data = self.irc.recv(4096)
+            data = self.receive()
             if data:
-                print(data.decode('utf-8'))
+                print(data)
                 log_file = open(self.log_file_name,"a")
-                log_file.write(data.decode('utf-8'))
+                log_file.write(data)
                 log_file.close()
                 self.processLine(data)
 
@@ -88,3 +89,17 @@ class TwircBot(object):
 
         print(config_string)
 
+
+    def send(self, message_string):
+        """Accept a string, convert it to bytes, and send it."""
+        message_bytes = bytes(message_string, 'utf-8')
+        self.irc.send(message_bytes)
+
+    
+    def receive(self):
+        """Accept some bytes from the socket and return them as a string."""
+        message_bytes = self.irc.recv(4096)
+        message_string = message_bytes.decode('utf-8')
+        return message_string
+
+    

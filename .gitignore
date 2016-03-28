@@ -14,8 +14,10 @@ notebook.md
 
 # Python virtulenv and bytecode
 env/
-__pychache__
+__pycache__/
 
 # Text editor swap files
 *.swp
 
+# Config files
+*.config

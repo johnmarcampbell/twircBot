@@ -35,7 +35,8 @@ class TwircBot(object):
             self.pong()
         for word in words:
             if word == 'smart':
-                self.send('PRIVMSG #' + self.nick + ' :You are smart\r\n')
+                self.privmsg(self.nick, 'You are smart!')
+                #self.send('PRIVMSG #' + self.nick + ' :You are smart\r\n')
 
 
     def connect(self):
@@ -103,4 +104,9 @@ class TwircBot(object):
     def pong(self):
         """Send a PONG."""
         self.send('PONG :tmi.twitch.tv\r\n')
+
+    def privmsg(self, channel, message):
+        """ Send a private message to a particular channel. """
+        self.send('PRIVMSG #' + channel + ' :' + message)
+    
       

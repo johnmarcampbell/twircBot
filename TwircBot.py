@@ -31,10 +31,10 @@ class TwircBot(object):
 
     def processLine(self, line):
         words = line.split()
-        if words[0] == 'PING': 
+        if words[0] == bytes('PING','utf-8'):
             self.irc.send(bytes('PONG :tmi.twitch.tv\r\n', 'utf-8'))
             print('I have received a ping!!')
-            irc.send(bytes('PRIVMSG #' + self.nick + ' :I received a PING!!\r\n', 'utf-8'));
+            self.irc.send(bytes('PRIVMSG #' + self.nick + ' :I received a PING!!\r\n', 'utf-8'));
         for word in words:
             if word == bytes('smart','utf-8'):
                 self.irc.send(bytes('PRIVMSG #' + self.nick + ' :You are smart\r\n', 'utf-8'));

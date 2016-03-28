@@ -40,10 +40,10 @@ class TwircBot(object):
 
     def connect(self):
         """Connect to twitch chat"""
-        user_string = 'USER ' + self.nick + ' \r\n'
-        nick_string = 'NICK ' + self.nick + ' \r\n'
-        oauth_string = 'PASS oauth:' + self.oauth + ' \r\n'
-        cap_req_string = 'CAP REQ :twitch.tv/membership \r\n'
+        user_string = 'USER ' + self.nick
+        nick_string = 'NICK ' + self.nick
+        oauth_string = 'PASS oauth:' + self.oauth
+        cap_req_string = 'CAP REQ :twitch.tv/membership'
 
         self.irc.connect((self.host, self.port))
         self.send(user_string) 
@@ -53,7 +53,7 @@ class TwircBot(object):
         self.send(cap_req_string) 
 
         for channels in self.channel_list:
-            channel_string = 'JOIN #' + channels + ' \r\n'
+            channel_string = 'JOIN #' + channels
             self.send(channel_string) 
 
         while True: 
@@ -90,7 +90,7 @@ class TwircBot(object):
 
     def send(self, message_string):
         """Accept a string, convert it to bytes, and send it."""
-        message_bytes = bytes(message_string, 'utf-8')
+        message_bytes = bytes(message_string + '\r\n', 'utf-8')
         self.irc.send(message_bytes)
 
     

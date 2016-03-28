@@ -32,9 +32,7 @@ class TwircBot(object):
     def processLine(self, line):
         words = line.split()
         if words[0] == 'PING':
-            self.send('PONG :tmi.twitch.tv\r\n')
-            print('I have received a ping!!')
-            self.send('PRIVMSG #' + self.nick + ' :I received a PING!!\r\n')
+            self.pong()
         for word in words:
             if word == 'smart':
                 self.send('PRIVMSG #' + self.nick + ' :You are smart\r\n')
@@ -102,4 +100,7 @@ class TwircBot(object):
         message_string = message_bytes.decode('utf-8')
         return message_string
 
-    
+    def pong(self):
+        """Send a PONG."""
+        self.send('PONG :tmi.twitch.tv\r\n')
+      

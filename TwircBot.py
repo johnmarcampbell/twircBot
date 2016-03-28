@@ -29,16 +29,6 @@ class TwircBot(object):
 
         config_file.close()
 
-    def processLine(self, line):
-        words = line.split()
-        if words[0] == 'PING':
-            self.pong()
-        for word in words:
-            if word == 'smart':
-                self.privmsg(self.nick, 'You are smart!')
-                #self.send('PRIVMSG #' + self.nick + ' :You are smart\r\n')
-
-
     def connect(self):
         """Connect to twitch chat"""
         user_string = 'USER ' + self.nick
@@ -47,7 +37,6 @@ class TwircBot(object):
         cap_req_string = 'CAP REQ :twitch.tv/membership'
 
         self.irc.connect((self.host, self.port))
-        self.send(user_string) 
         self.send(user_string) 
         self.send(oauth_string) 
         self.send(nick_string) 
@@ -64,7 +53,7 @@ class TwircBot(object):
                 log_file = open(self.log_file_name,"a")
                 log_file.write(data)
                 log_file.close()
-                self.processLine(data)
+                self.processData(data)
 
 
     def print_config(self):
@@ -109,4 +98,13 @@ class TwircBot(object):
         """ Send a private message to a particular channel. """
         self.send('PRIVMSG #' + channel + ' :' + message)
     
-      
+    def processData(self, data):
+        """ Break up the datastream into lines and decide what to do with them. """
+        for lines in data.splitlines():
+            words = lines.split()
+            if words[0] == 'PING':
+                self.pong()
+            if 'smart' in words:
+                self.privmsg(self.nick, 'You are smart!')
+
+  

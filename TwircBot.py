@@ -1,6 +1,7 @@
 import socket
 import sys
 import re
+from datetime import datetime as dt
 
 
 class TwircBot(object):
@@ -39,7 +40,8 @@ class TwircBot(object):
             if data:
                 print(data)
                 log_file = open(self.log_file_name,"a")
-                log_file.write(data)
+                current_time = dt.strftime(dt.utcnow(), self.time_format)
+                log_file.write(current_time + "\n" + data)
                 log_file.close()
                 self.processData(data)
 
@@ -60,6 +62,7 @@ class TwircBot(object):
         config_string = config_string[:-2] #Remove last comma and space
 
         config_string += "\nLog file: " + self.log_file_name
+        config_string += "\nTime format: " + self.time_format
 
         config_string += "\n***** TwircBot config *****\n"
 
@@ -116,6 +119,12 @@ class TwircBot(object):
                 self.channel_list = line.split()[1:]
             elif words[0] == "log:": 
                 self.log_file_name = line.split()[1]
+            elif words[0] == "timeFormat:": 
+                self.time_format = re.search('\[.*\]',line).group(0)
 
         config_file.close()
+
+    def logData(self, data):
+        print("Blarg")
+        
 

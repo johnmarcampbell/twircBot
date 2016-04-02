@@ -39,10 +39,6 @@ class TwircBot(object):
             data = self.receive()
             if data:
                 print(data)
-                log_file = open(self.log_file_name,"a")
-                current_time = dt.strftime(dt.utcnow(), self.time_format)
-                log_file.write(current_time + "\n" + data)
-                log_file.close()
                 self.processData(data)
 
 
@@ -99,6 +95,7 @@ class TwircBot(object):
     def processData(self, data):
         """ Break up the datastream into lines and decide what to do with them. """
         for line in data.splitlines():
+            self.logData(line)
             words = line.split()
             if words[0] == 'PING':
                 self.pong()
@@ -125,6 +122,10 @@ class TwircBot(object):
         config_file.close()
 
     def logData(self, data):
-        print("Blarg")
+        """ Timestamps a line of output and send it to the logfile """
+        current_time = dt.strftime(dt.utcnow(), self.time_format)
+        log_file = open(self.log_file_name,"a")
+        log_file.write(current_time + " " + data + "\n")
+        log_file.close()
         
 

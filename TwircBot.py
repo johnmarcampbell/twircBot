@@ -12,7 +12,7 @@ class TwircBot(object):
 
 
     def __init__(self, config_file_name):
-        """Parse the configuration file to retrieve the config parameters """
+        """ Parse the configuration file to retrieve the config parameters """
         self.irc = socket.socket()
         self.host = 'irc.twitch.tv'
         self.port = 6667
@@ -20,7 +20,7 @@ class TwircBot(object):
         self.readConfigFile(config_file_name)
 
     def connect(self):
-        """Connect to twitch chat"""
+        """ Connect to twitch chat """
         user_string = 'USER ' + self.nick
         nick_string = 'NICK ' + self.nick
         oauth_string = 'PASS oauth:' + self.oauth
@@ -35,11 +35,15 @@ class TwircBot(object):
         for channel in self.channel_list:
             self.join(channel)
 
+        temp_data = ''
         while True: 
             data = self.receive()
-            if data:
-                print(data)
+            if data and (data[-2:] != '\r\n'): # Checks to make sure we got an entire line
+                temp_data += data
+            elif data:
+                data = temp_data + data
                 self.processData(data)
+                temp_data = ''
 
 
     def print_config(self):
@@ -66,18 +70,18 @@ class TwircBot(object):
 
 
     def send(self, message_string):
-        """Accept a string, convert it to bytes, and send it."""
+        """ Accept a string, convert it to bytes, and send it. """
         message_bytes = bytes(message_string + '\r\n', 'utf-8')
         self.irc.send(message_bytes)
     
     def receive(self):
-        """Accept some bytes from the socket and return them as a string."""
+        """ Accept some bytes from the socket and return them as a string. """
         message_bytes = self.irc.recv(self.block_size)
         message_string = message_bytes.decode('utf-8')
         return message_string
 
     def pong(self):
-        """Send a PONG."""
+        """ Send a PONG. """
         self.send('PONG :tmi.twitch.tv\r\n')
 
     def privmsg(self, channel, message):
@@ -189,5 +193,3 @@ class TwircBot(object):
         log_file = open(self.log_file_name,"a")
         log_file.write(current_time + " " + data + "\n")
         log_file.close()
-        
-

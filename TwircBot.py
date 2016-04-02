@@ -120,6 +120,8 @@ class TwircBot(object):
                 message = privmsgMatch.group(3)
                 log_string = "PRIVMSG #" + channel + " " + user + ": " + message
                 self.logData(log_string)
+                if re.search('smart', message):
+                    self.privmsg(self.nick, 'You are smart!')
                 continue 
 
             joinMatch = re.search(join_string, line)
@@ -165,8 +167,6 @@ class TwircBot(object):
 
             self.logData(line)
 
-            if re.search('smart', line):
-                self.privmsg(self.nick, 'You are smart!')
 
     def readConfigFile(self, config_file_name):
         """ Read a configuration file and load all the values. """

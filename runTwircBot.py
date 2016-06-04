@@ -1,6 +1,10 @@
 from TwircBot import TwircBot as tw
 import sys
 
-bot = tw(sys.argv[1])
+if len(sys.argv) >= 2:
+    bot = tw(sys.argv[1])
+else:
+    bot = tw()
+
 bot.print_config()
 bot.connect()

@@ -11,13 +11,15 @@ class TwircBot(object):
     """
 
 
-    def __init__(self, config_file_name):
+    def __init__(self, config_file_name = ''):
         """ Parse the configuration file to retrieve the config parameters """
         self.irc = socket.socket()
         self.host = 'irc.twitch.tv'
         self.port = 6667
         self.block_size = 4096
-        self.readConfigFile(config_file_name)
+        self.readConfigFile('config/default.config')
+        if( config_file_name ):
+            self.readConfigFile(config_file_name)
 
     def connect(self):
         """ Connect to twitch chat """
@@ -175,7 +177,10 @@ class TwircBot(object):
         for line in config_file:
             words = line.split()
             if words[0] == "oauth:": 
-                self.oauth = line.split()[1]
+                if len(line.split()) >=2:
+                    self.oauth = line.split()[1]
+                else:
+                    self.oauth = ''
             elif words[0] == "nick:": 
                 self.nick = line.split()[1]
             elif words[0] == "channels:": 

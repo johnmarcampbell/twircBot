@@ -14,9 +14,6 @@ class TwircBot(object):
     def __init__(self, config_file_name = ''):
         """ Parse the configuration file to retrieve the config parameters """
         self.irc = socket.socket()
-        self.host = 'irc.twitch.tv'
-        self.port = 6667
-        self.block_size = 4096
         self.readConfigFile('config/default.config')
         if( config_file_name ):
             self.readConfigFile(config_file_name)
@@ -189,6 +186,12 @@ class TwircBot(object):
                 self.log_file_name = line.split()[1]
             elif words[0] == "timeFormat:": 
                 self.time_format = re.search('\[.*\]',line).group(0)
+            elif words[0] == "host:": 
+                self.host = line.split()[1]
+            elif words[0] == "port:": 
+                self.port = int(line.split()[1])
+            elif words[0] == "block_size:": 
+                self.block_size = int(line.split()[1])
 
         config_file.close()
 

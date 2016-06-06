@@ -16,8 +16,8 @@ TwircBot's default configuration is not very interesting. It will anonymously co
 The source includes a simple script, ``runTwircBot.py``, that will automatically open a connection. It will optionally take a command line argument to use a particular configuration: 
 
 ```
-$ python3 runTwircBot.py  # Default config
-$ python3 runTwircBot.py myFile.config  # User specifed config
+$ python3 runTwircBot.py                    # Default config
+$ python3 runTwircBot.py myFile.config      # User specifed config
 ```
 
 ##Writing your own config file
@@ -33,7 +33,7 @@ There are five options a user might want to configure:
 - **oauth**: A 30-character alphanumeric token that is associated with your username. Generate one [here](http://twitchapps.com/tmi/).
 - **channels**: A list of channels to connect to.
 - **log**: The name of the log file you want TwircBot to write to.
-- **time_format**: TwircBot time stamps every line of chat it records. The format for the time stamp is specified as in the ``strftime()`` method in Python's ``datetime`` module. You can read about the formatting [here](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior). Note that if your formatting string 
+- **time_format**: TwircBot time stamps every line of chat it records. The format for the time stamp is specified as in the ``strftime()`` method in Python's ``datetime`` module. You can read about the formatting [here](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior). Note that if your formatting string has space in it you'll have to enclose the whole thing in *single* quotes.
 
 ####Dev options
 There are three options users will not need to touch:

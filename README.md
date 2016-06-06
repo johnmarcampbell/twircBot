@@ -10,7 +10,7 @@ from TwircBot import TwircBot
 TwircBot().connect()
 ```
 
-TwircBot's default configuration is not very interesting. It will anonymously connect to the ``#twircbot`` channel and log whatever chat it sees there. You can get more useful behavior by specifying your own configuration file and referencing it when you instantiate TwircBot:  ``bot = TwircBot("myFile.config")``.
+TwircBot's default configuration is not very interesting. It will anonymously connect to the ``#twircbot`` channel and log whatever chat it sees there. You can get more useful behavior by specifying your own configuration file and referencing it when you instantiate TwircBot:  ``TwircBot("myFile.config").connect()``.
 
 The source includes a simple script, ``runTwircBot.py``, that will automatically open a connection. It will optionally take a command line argument to use a particular configuration: 
 
@@ -25,10 +25,10 @@ The syntax for specifying your own configuration options is very simple:
 - Multiple ``value``'s are seperated with spaces: ``key: value1 value2``. This is only necessary when you wish to connect to multiple ``channels``.
 - If you want to specify a ``value`` that has a space, you can surround it with *single* quotes. Example: ``time_format: '[%Y-%m-%d %H:%M:%S]'``
 
-A sample user-specified configuration file is provided in ``config/sampleConfig.sample``. TwircBot will automatically load the default configuration *first*, so you only need to specify the options you want to change.
+A sample user-specified configuration file is provided in ``sample.config``. TwircBot will automatically load the default configuration *first*, so you only need to specify the options you want to change.
 ####User options
 There are five options a user might want to configure:
-- **nick**: A user name to use to connect. TwircBot will connect anonymously if this is not specified.
+- **nick**: A Twitch user name to use to connect. If you specify this you *must* also specify an **oauth** token or you will fail to connect. TwircBot will connect anonymously if this is not specified.
 - **oauth**: A 30-character alphanumeric token that is associated with your username. Generate one [here](http://twitchapps.com/tmi/).
 - **channels**: A list of channels to connect to.
 - **log**: The name of the log file you want TwircBot to write to.

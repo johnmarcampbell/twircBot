@@ -25,7 +25,7 @@ The syntax for specifying your own configuration options is very simple:
 - Multiple ``value``'s are seperated with spaces: ``key: value1 value2``. This is only necessary when you wish to connect to multiple ``channels``.
 - If you want to specify a ``value`` that has a space, you can surround it with *single* quotes. Example: ``time_format: '[%Y-%m-%d %H:%M:%S]'``
 
-A sample user-specified configuration file is provided in ``sample.config``. TwircBot will automatically load the default configuration *first*, so you only need to specify the options you want to change.
+A sample user-specified configuration file is provided in ``config/sample.config``. TwircBot will automatically load the default configuration *first*, so you only need to specify the options you want to change.
 ####User options
 There are five options a user might want to configure:
 - **nick**: A Twitch user name to use to connect. If you specify this you *must* also specify an **oauth** token or you will fail to connect. TwircBot will connect anonymously if this is not specified.

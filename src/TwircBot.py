@@ -2,7 +2,7 @@ import socket
 import sys
 import re
 from datetime import datetime as dt
-from ConfigReader.ConfigReader import ConfigReader as cr
+from .ConfigReader import ConfigReader as cr
 
 
 class TwircBot(object):

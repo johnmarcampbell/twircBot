@@ -2,13 +2,12 @@
 
 The TWitch IRC Bot is a basic bot that connects to [Twitch.tv](https://www.twitch.tv/)'s IRC network for the purposes of keeping chat logs.
 
-##How to run TwircBot
-TwircBot can be run by simply creating a ``TwircBot`` object and using the ``connect()`` method.
+##Running TwircBot
+TwircBot can be run by simply using the ``connect()`` method.
 
 ```python
 from TwircBot import TwircBot
-bot = TwircBot()
-bot.connect()
+TwircBot().connect()
 ```
 
 TwircBot's default configuration is not very interesting. It will anonymously connect to the ``#twircbot`` channel and log whatever chat it sees there. You can get more useful behavior by specifying your own configuration file and referencing it when you instantiate TwircBot:  ``bot = TwircBot("myFile.config")``.
@@ -17,7 +16,7 @@ The source includes a simple script, ``runTwircBot.py``, that will automatically
 
 ```
 $ python3 runTwircBot.py                    # Default config
-$ python3 runTwircBot.py myFile.config      # User specifed config
+$ python3 runTwircBot.py myFile.config      # User-specifed config
 ```
 
 ##Writing your own config file

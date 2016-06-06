@@ -2,6 +2,7 @@ import socket
 import sys
 import re
 from datetime import datetime as dt
+from ConfigReader.ConfigReader import ConfigReader as cr
 
 
 class TwircBot(object):
@@ -14,24 +15,25 @@ class TwircBot(object):
     def __init__(self, config_file_name = ''):
         """ Parse the configuration file to retrieve the config parameters """
         self.irc = socket.socket()
-        self.readConfigFile('config/default.config')
+        reader = cr()
+        self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
-            self.readConfigFile(config_file_name)
+            self.config = reader.parse_file(config_file_name)
 
     def connect(self):
         """ Connect to twitch chat """
-        user_string = 'USER ' + self.nick
-        nick_string = 'NICK ' + self.nick
-        oauth_string = 'PASS oauth:' + self.oauth
+        user_string = 'USER ' + self.config['nick']
+        nick_string = 'NICK ' + self.config['nick']
+        oauth_string = 'PASS oauth:' + self.config['oauth']
         cap_req_string = 'CAP REQ :twitch.tv/membership'
 
-        self.irc.connect((self.host, self.port))
+        self.irc.connect((self.config['host'], self.config['port']))
         self.send(user_string) 
         self.send(oauth_string) 
         self.send(nick_string) 
         self.send(cap_req_string) 
 
-        for channel in self.channel_list:
+        for channel in self.config['channels']:
             self.join(channel)
 
         temp_data = ''
@@ -52,16 +54,16 @@ class TwircBot(object):
         """
         config_string = "\n***** TwircBot config *****\n"
 
-        config_string += "Connecting to " + self.nick + "@"
-        config_string += self.host + ":" + str(self.port) + "\n"
+        config_string += "Connecting to " + self.config['nick'] + "@"
+        config_string += self.config['host'] + ":" + str(self.config['port']) + "\n"
 
         config_string += "Channels: "
-        for channels in self.channel_list:
+        for channels in self.config['channels']:
             config_string += str(channels) + ", "
         config_string = config_string[:-2] #Remove last comma and space
 
-        config_string += "\nLog file: " + self.log_file_name
-        config_string += "\nTime format: " + self.time_format
+        config_string += "\nLog file: " + self.config['log']
+        config_string += "\nTime format: " + self.config['time_format']
 
         config_string += "\n***** TwircBot config *****\n"
 
@@ -75,7 +77,7 @@ class TwircBot(object):
     
     def receive(self):
         """ Accept some bytes from the socket and return them as a string. """
-        message_bytes = self.irc.recv(self.block_size)
+        message_bytes = self.irc.recv(self.config['block_size'])
         message_string = message_bytes.decode('utf-8')
         return message_string
 
@@ -109,8 +111,8 @@ class TwircBot(object):
             join_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv JOIN \#(\S+)'
             part_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PART \#(\S+)'
             mode_string = ':jtv MODE \#(\S+) ([+]|[-])o (\S+)'
-            name_list_string = ':' + self.nick + '\.tmi\.twitch\.tv 353 ' + self.nick + ' \= \#(\S+) :(.*)'
-            name_list_end_string = ':' + self.nick + '\.tmi\.twitch\.tv 366 ' + self.nick + ' \#(\S+) :End of \/NAMES list'
+            name_list_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 353 ' + self.config['nick'] + ' \= \#(\S+) :(.*)'
+            name_list_end_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 366 ' + self.config['nick'] + ' \#(\S+) :End of \/NAMES list'
 
             privmsgMatch = re.search(privmsg_string, line)
             if privmsgMatch:
@@ -120,7 +122,7 @@ class TwircBot(object):
                 log_string = "PRIVMSG #" + channel + " " + user + ": " + message
                 self.logData(log_string)
                 if re.search('smart', message):
-                    self.privmsg(self.nick, 'You are smart!')
+                    self.privmsg(self.config['nick'], 'You are smart!')
                 continue 
 
             joinMatch = re.search(join_string, line)
@@ -167,37 +169,9 @@ class TwircBot(object):
             self.logData(line)
 
 
-    def readConfigFile(self, config_file_name):
-        """ Read a configuration file and load all the values. """
-        config_file = open(config_file_name,"r")
-
-        for line in config_file:
-            words = line.split()
-            if words[0] == "oauth:": 
-                if len(line.split()) >=2:
-                    self.oauth = line.split()[1]
-                else:
-                    self.oauth = ''
-            elif words[0] == "nick:": 
-                self.nick = line.split()[1]
-            elif words[0] == "channels:": 
-                self.channel_list = line.split()[1:]
-            elif words[0] == "log:": 
-                self.log_file_name = line.split()[1]
-            elif words[0] == "timeFormat:": 
-                self.time_format = re.search('\[.*\]',line).group(0)
-            elif words[0] == "host:": 
-                self.host = line.split()[1]
-            elif words[0] == "port:": 
-                self.port = int(line.split()[1])
-            elif words[0] == "block_size:": 
-                self.block_size = int(line.split()[1])
-
-        config_file.close()
-
     def logData(self, data):
         """ Timestamps a line of output and send it to the logfile """
-        current_time = dt.strftime(dt.utcnow(), self.time_format)
-        log_file = open(self.log_file_name,"a")
+        current_time = dt.strftime(dt.utcnow(), self.config['time_format'])
+        log_file = open(self.config['log'],"a")
         log_file.write(current_time + " " + data + "\n")
         log_file.close()

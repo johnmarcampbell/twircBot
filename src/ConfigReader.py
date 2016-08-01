@@ -103,7 +103,9 @@ class ConfigReader(object):
                             'time_format': str,
                             'host': str,
                             'port': int,
-                            'block_size': int
+                            'block_size': int,
+                            'reconnect_timer': int,
+                            'stayalive_timer': int
                         }
 
         # Check that configuration has all necessary keys

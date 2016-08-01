@@ -14,7 +14,9 @@ class TwircBot(object):
 
     def __init__(self, config_file_name = ''):
         """ Parse the configuration file to retrieve the config parameters """
-        self.irc = socket.socket()
+        self.stayAlive = True
+        self.isConnected = False
+        self.bornTime = dt.utcnow()
         reader = cr()
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
@@ -26,7 +28,13 @@ class TwircBot(object):
         self.connect()
 
         temp_data = ''
-        while True: 
+        while self.stayAlive: 
+            self.checkTimers()
+
+            if self.reconnect:
+                self.disconnect()
+                self.connect()
+
             data = self.receive()
             if data and (data[-2:] != '\r\n'): # Checks to make sure we got an entire line
                 temp_data += data
@@ -34,24 +42,56 @@ class TwircBot(object):
                 data = temp_data + data
                 self.processData(data)
                 temp_data = ''
+
+        self.finish()
+
+    def finish(self):
+        """Make sure we are disconnect and close log files and everything"""
+        if self.isConnected:
+            self.disconnect()
+
+        finishMessage = "TwircBot is going to sleep now..."
+        self.logData(finishMessage)
+        
         
     def connect(self):
         """ Connect to twitch chat """
+
+        connectMessage = "Attempting to connect... "
+        self.logData(connectMessage)
+
         user_string = 'USER ' + self.config['nick']
         nick_string = 'NICK ' + self.config['nick']
         oauth_string = 'PASS oauth:' + self.config['oauth']
         cap_req_string = 'CAP REQ :twitch.tv/membership'
 
+        self.connectTime = dt.utcnow()
+        self.irc = socket.socket()
         self.irc.connect((self.config['host'], self.config['port']))
+        self.irc.setblocking(False)
         self.send(user_string) 
         self.send(oauth_string) 
         self.send(nick_string) 
         self.send(cap_req_string) 
 
+        self.isConnected = True;
+
         for channel in self.config['channels']:
             self.join(channel)
 
+    def disconnect(self):
+        """Disconnect from twitch chat"""
+        
+        disconnectMessage = "Disconnecting... "
+        self.logData(disconnectMessage)
 
+        for channel in self.config['channels']:
+            self.part(channel)
+
+        # self.irc.shutdown(socket.SHUT_RDWR)
+        self.irc.close()
+
+        self.isConnected = False;
 
     def print_config(self):
         """
@@ -70,6 +110,8 @@ class TwircBot(object):
 
         config_string += "\nLog file: " + self.config['log']
         config_string += "\nTime format: " + self.config['time_format']
+        config_string += "\nReconnect timer: " + str(self.config['reconnect_timer'])
+        config_string += "\nStayAlive timer: " + str(self.config['stayalive_timer'])
 
         config_string += "\n***** TwircBot config *****\n"
 
@@ -83,8 +125,12 @@ class TwircBot(object):
     
     def receive(self):
         """ Accept some bytes from the socket and return them as a string. """
-        message_bytes = self.irc.recv(self.config['block_size'])
-        message_string = message_bytes.decode('utf-8')
+        try:
+            message_bytes = self.irc.recv(self.config['block_size'])
+            message_string = message_bytes.decode('utf-8')
+        except BlockingIOError:
+            message_string = ''
+
         return message_string
 
     def pong(self):
@@ -181,3 +227,26 @@ class TwircBot(object):
         log_file = open(self.config['log'],"a")
         log_file.write(current_time + " " + data + "\n")
         log_file.close()
+
+    def checkTimers(self):
+        """Check the various state timers and determine if we need to take action"""
+
+        # Check reconnect time
+        now = dt.utcnow()
+        connectDelta = now - self.connectTime
+        lifetime = now - self.bornTime
+
+        if connectDelta.seconds > self.config['reconnect_timer']:
+            log_message = "Reconnect time is up. Time to reconnect!"
+            self.logData(log_message)
+            self.reconnect = True
+        else:
+            self.reconnect = False
+
+        if lifetime.seconds > self.config['stayalive_timer'] and self.config['stayalive_timer'] > 0:
+            log_message = "StayAlive time is up. Shutting everything down!"
+            self.logData(log_message)
+            self.stayAlive = False
+
+
+        

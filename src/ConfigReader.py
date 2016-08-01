@@ -10,6 +10,22 @@ class ConfigReader(object):
     def __init__(self):
         """TODO: to be defined """
         self.configuration = {}
+
+        self.config_template = {
+                            'oauth': str,
+                            'nick': str,
+                            'channels': list,
+                            'log': str,
+                            'time_format': str,
+                            'host': str,
+                            'port': int,
+                            'block_size': int,
+                            'reconnect_timer': int,
+                            'stayalive_timer': int,
+                            'connect_timeout': float,
+                            'receive_timeout': float
+                        }
+
         
     def parse_file(self, config_file_name):
         """
@@ -56,10 +72,7 @@ class ConfigReader(object):
                 if len(value) == 1 and key != 'channels':
                     value = value[0]
 
-            try:
-                value = int(value)
-            except:
-                pass
+            value = self.config_template[key](value)
 
             config[key] = value
         
@@ -95,21 +108,8 @@ class ConfigReader(object):
 
     def check_keys(self):
         """This function will check the configuration and make sure all mandatory values are present"""
-        config_template = {
-                            'oauth': str,
-                            'nick': str,
-                            'channels': list,
-                            'log': str,
-                            'time_format': str,
-                            'host': str,
-                            'port': int,
-                            'block_size': int,
-                            'reconnect_timer': int,
-                            'stayalive_timer': int
-                        }
-
         # Check that configuration has all necessary keys
-        for key in config_template:
+        for key in self.config_template:
             try:
                 value = self.configuration[key]
             except KeyError:
@@ -121,12 +121,12 @@ class ConfigReader(object):
                 print(error_string)
                 raise
 
-            if type(self.configuration[key]) != config_template[key]:
+            if type(self.configuration[key]) != self.config_template[key]:
                 error_string = '\nError reading config file!!\n'
                 error_string += 'Configuration parameter "'
                 error_string += key
                 error_string += '" shoud be of type '
-                error_string += config_template[key].__name__
+                error_string += self.config_template[key].__name__
                 error_string += '. \n'
                 print(error_string)
                 raise TypeError(type(self.configuration[key]))
@@ -134,7 +134,7 @@ class ConfigReader(object):
         # Check that configuration doesn't have any extraneous keys
         for key in self.configuration:
             try:
-                config_template[key]
+                self.config_template[key]
             except KeyError:
                 error_string = "\nError reading config file!!\n"
                 error_string += "Configuration file tried to set unknown parameter: "

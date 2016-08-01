@@ -42,6 +42,7 @@ class TwircBot(object):
                 data = temp_data + data
                 self.processData(data)
                 temp_data = ''
+                self.last_data = dt.utcnow()
 
         self.finish()
 
@@ -65,10 +66,12 @@ class TwircBot(object):
         oauth_string = 'PASS oauth:' + self.config['oauth']
         cap_req_string = 'CAP REQ :twitch.tv/membership'
 
-        self.connectTime = dt.utcnow()
         self.irc = socket.socket()
+        self.irc.settimeout(self.config['connect_timeout'])
         self.irc.connect((self.config['host'], self.config['port']))
-        self.irc.setblocking(False)
+        self.last_data = dt.utcnow()
+
+        self.irc.settimeout(self.config['receive_timeout'])
         self.send(user_string) 
         self.send(oauth_string) 
         self.send(nick_string) 
@@ -129,6 +132,8 @@ class TwircBot(object):
             message_bytes = self.irc.recv(self.config['block_size'])
             message_string = message_bytes.decode('utf-8')
         except BlockingIOError:
+            message_string = ''
+        except socket.timeout:
             message_string = ''
 
         return message_string
@@ -233,10 +238,10 @@ class TwircBot(object):
 
         # Check reconnect time
         now = dt.utcnow()
-        connectDelta = now - self.connectTime
+        inputDelta = now - self.last_data
         lifetime = now - self.bornTime
 
-        if connectDelta.seconds > self.config['reconnect_timer']:
+        if inputDelta.seconds > self.config['reconnect_timer']:
             log_message = "Reconnect time is up. Time to reconnect!"
             self.logData(log_message)
             self.reconnect = True
@@ -244,7 +249,7 @@ class TwircBot(object):
             self.reconnect = False
 
         if lifetime.seconds > self.config['stayalive_timer'] and self.config['stayalive_timer'] > 0:
-            log_message = "StayAlive time is up. Shutting everything down!"
+            log_message = "StayAlive time is up. Time to go to sleep!"
             self.logData(log_message)
             self.stayAlive = False
 

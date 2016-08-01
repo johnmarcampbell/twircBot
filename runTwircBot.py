@@ -7,4 +7,4 @@ else:
     bot = TwircBot()
 
 bot.print_config()
-bot.connect()
+bot.start()

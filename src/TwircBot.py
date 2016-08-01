@@ -20,6 +20,21 @@ class TwircBot(object):
         if( config_file_name ):
             self.config = reader.parse_file(config_file_name)
 
+    def start(self):
+        """Connect to twitch chat and start listening"""
+
+        self.connect()
+
+        temp_data = ''
+        while True: 
+            data = self.receive()
+            if data and (data[-2:] != '\r\n'): # Checks to make sure we got an entire line
+                temp_data += data
+            elif data:
+                data = temp_data + data
+                self.processData(data)
+                temp_data = ''
+        
     def connect(self):
         """ Connect to twitch chat """
         user_string = 'USER ' + self.config['nick']
@@ -36,15 +51,6 @@ class TwircBot(object):
         for channel in self.config['channels']:
             self.join(channel)
 
-        temp_data = ''
-        while True: 
-            data = self.receive()
-            if data and (data[-2:] != '\r\n'): # Checks to make sure we got an entire line
-                temp_data += data
-            elif data:
-                data = temp_data + data
-                self.processData(data)
-                temp_data = ''
 
 
     def print_config(self):

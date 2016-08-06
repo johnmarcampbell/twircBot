@@ -144,7 +144,10 @@ class TwircBot(object):
 
     def privmsg(self, channel, message):
         """ Send a private message to a particular channel. """
-        self.send('PRIVMSG #' + channel + ' :' + message)
+        message_text = 'PRIVMSG #' + channel + ' :' + message
+        log_text = 'PRIVMSG #' + channel + ' ' + self.config['nick'] + ' (self): ' + message
+        self.send(message_text)
+        self.logData(log_text)
     
     def join(self, channel):
         """ Join a channel. """

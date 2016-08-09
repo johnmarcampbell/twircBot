@@ -83,6 +83,20 @@ class testConfigReader(unittest.TestCase):
         reader.parse_line(line_with_pipe)
         self.assertEqual(reader.configuration, test_dictionary)
 
+    def test_split_line(self):
+        """Test split_line()"""
+        string_without_quotes = 'cat dog marmot'
+        list_without_quotes = ['cat', 'dog', 'marmot']
+        string_single_quotes = "dolphin whale 'whale shark' shark"  # Keeps words joined
+        list_single_quotes = ['dolphin','whale','whale shark', 'shark']
+        string_double_quotes = 'batman "bat man" spiderman'         # Doesn't keep words joined
+        list_double_quotes = ['batman', '"bat', 'man"', 'spiderman']
+
+        reader = cr()
+        self.assertEqual( reader.split_line(string_without_quotes), list_without_quotes )
+        self.assertEqual( reader.split_line(string_single_quotes), list_single_quotes )
+        self.assertEqual( reader.split_line(string_double_quotes), list_double_quotes )
+
     def tearDown(self):
         """Delete the example config file, etc"""
     

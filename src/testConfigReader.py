@@ -70,7 +70,18 @@ class testConfigReader(unittest.TestCase):
         reader.parse_file(self.example_config_filename)
         self.assertEqual(reader.configuration, self.exemplar_config)
 
-        
+    def test_parse_line(self):
+        """Test parse_line()"""
+        test_dictionary = { 'a': ['1'], 'b': ['2'], 'c': ['3'] }
+        line_without_separator = 'a 1'
+        line_with_semicolon = 'b: 2'
+        line_with_pipe = 'c| 3'
+
+        reader = cr()
+        reader.parse_line(line_without_separator)
+        reader.parse_line(line_with_semicolon)
+        reader.parse_line(line_with_pipe)
+        self.assertEqual(reader.configuration, test_dictionary)
 
     def tearDown(self):
         """Delete the example config file, etc"""

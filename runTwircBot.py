@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from src.TwircBot import TwircBot
-from src.CommandModule import CommandModule
-from src.logModule import logModule
+from src.CommandSuite import CommandSuite
+from src.LogSuite import LogSuite
 import sys
 
 try:
@@ -11,8 +11,8 @@ except IndexError:
     bot = TwircBot()
 
 
-module = CommandModule("test")
-logger = logModule("logger")
+module = CommandSuite("test")
+logger = LogSuite("logger")
 bot.add_module(module)
 bot.add_module(logger)
 

@@ -1,13 +1,13 @@
 import re
 from datetime import datetime as dt
-from src.CommandModule import CommandModule
+from src.CommandSuite import CommandSuite
 
-class logModule(CommandModule):
-    """Module for logging chat data"""
+class LogSuite(CommandSuite):
+    """Suite for logging chat data"""
 
     def __init__(self, name):
-        """Init function for logModule"""
-        CommandModule.__init__(self, name)
+        """Init function for logSuite"""
+        CommandSuite.__init__(self, name)
 
         self.config = {}
         self.config['time_format'] =  '[%Y-%m-%d %H:%M:%S]'

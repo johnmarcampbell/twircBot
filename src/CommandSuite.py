@@ -1,10 +1,10 @@
-class CommandModule(object):
+class CommandSuite(object):
     """Abstract class for command modules"""
 
     def __init__(self, name):
         """Declare some variables, etc"""
         self.name = name
-        print("CommandModule is starting")
+        print("CommandSuite is starting")
 
     def parse(self, data):
         """Test method for this module"""
@@ -14,6 +14,6 @@ class CommandModule(object):
 
     def finish(self):
         """Function that gets called as TwircBot is shutting down"""
-        print("CommandModule is finishing")
+        print("CommandSuite is finishing")
         
     

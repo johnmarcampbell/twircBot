@@ -1,5 +1,5 @@
 class CommandSuite(object):
-    """Abstract class for command modules"""
+    """Abstract class for command suites"""
 
     def __init__(self, name):
         """Declare some variables, etc"""
@@ -7,9 +7,9 @@ class CommandSuite(object):
         print("CommandSuite is starting")
 
     def parse(self, data):
-        """Test method for this module"""
+        """Test method for this suite"""
 
-        print("Test module is echoing data...")
+        print("Test suite is echoing data...")
         print(data)
 
     def finish(self):

@@ -17,7 +17,7 @@ class TwircBot(object):
         self.stayAlive = True
         self.isConnected = False
         self.bornTime = dt.utcnow()
-        self.module_list = []
+        self.suite_list = []
         reader = cr()
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
@@ -53,8 +53,8 @@ class TwircBot(object):
         if self.isConnected:
             self.disconnect()
 
-        for module in self.module_list:
-            module.finish()
+        for suite in self.suite_list:
+            suite.finish()
         finishMessage = "TwircBot is going to sleep now..."
         self.logData(finishMessage)
         
@@ -163,8 +163,8 @@ class TwircBot(object):
     
     def processData(self, data):
         """ Break up the datastream into lines and decide what to do with them. """
-        for module in self.module_list:
-            module.parse(data)
+        for suite in self.suite_list:
+            suite.parse(data)
 
         for line in data.splitlines():
             words = line.split()
@@ -199,11 +199,11 @@ class TwircBot(object):
             self.logData(log_message)
             self.stayAlive = False
 
-    def add_module(self, module):
-        """Add a command module to TwircBot's module list"""
+    def add_suite(self, suite):
+        """Add a command suite to TwircBot's suite list"""
 
-        self.module_list.append(module)
-        module.set_host(self)
-        module_type = type(module).__name__
-        message = "Adding module (name - type): " + module.name + " - " + module_type
+        self.suite_list.append(suite)
+        suite.set_host(self)
+        suite_type = type(suite).__name__
+        message = "Adding suite (name - type): " + suite.name + " - " + suite_type
         self.logData(message)

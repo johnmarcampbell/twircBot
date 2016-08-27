@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from src.TwircBot import TwircBot
 import sys
 

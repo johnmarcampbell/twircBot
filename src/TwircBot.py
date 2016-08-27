@@ -17,6 +17,7 @@ class TwircBot(object):
         self.stayAlive = True
         self.isConnected = False
         self.bornTime = dt.utcnow()
+        self.module_list = []
         reader = cr()
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
@@ -159,6 +160,9 @@ class TwircBot(object):
     
     def processData(self, data):
         """ Break up the datastream into lines and decide what to do with them. """
+        for module in self.module_list:
+            module.parse(data)
+
         for line in data.splitlines():
             words = line.split()
             if words[0] == 'PING':
@@ -256,5 +260,10 @@ class TwircBot(object):
             self.logData(log_message)
             self.stayAlive = False
 
+    def add_module(self, module):
+        """Add a command module to TwircBot's module list"""
 
-        
+        self.module_list.append(module)
+        module_type = type(module).__name__
+        message = "Just added a module of type " + module_type + " named " + module.name + "."
+        print(message)

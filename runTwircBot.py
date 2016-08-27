@@ -9,7 +9,9 @@ try:
 except IndexError:
     bot = TwircBot()
 
-module = CommandModule()
+
+module = CommandModule("test")
+bot.add_module(module)
 
 bot.print_config()
-# bot.start()
+bot.start()

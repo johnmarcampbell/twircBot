@@ -168,70 +168,6 @@ class TwircBot(object):
             if words[0] == 'PING':
                 self.pong()
                 self.logData(line)
-                continue
-
-            """ Define some regex search strings """
-            privmsg_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PRIVMSG \#(\S+) :(.*)'
-            join_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv JOIN \#(\S+)'
-            part_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PART \#(\S+)'
-            mode_string = ':jtv MODE \#(\S+) ([+]|[-])o (\S+)'
-            name_list_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 353 ' + self.config['nick'] + ' \= \#(\S+) :(.*)'
-            name_list_end_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 366 ' + self.config['nick'] + ' \#(\S+) :End of \/NAMES list'
-
-            privmsgMatch = re.search(privmsg_string, line)
-            if privmsgMatch:
-                user = privmsgMatch.group(1)
-                channel = privmsgMatch.group(2)
-                message = privmsgMatch.group(3)
-                log_string = "PRIVMSG #" + channel + " " + user + ": " + message
-                self.logData(log_string)
-                if re.search('smart', message):
-                    self.privmsg(self.config['nick'], 'You are smart!')
-                continue 
-
-            joinMatch = re.search(join_string, line)
-            if joinMatch:
-                user = joinMatch.group(1)
-                channel = joinMatch.group(2)
-                log_string = "JOIN #" + channel + " " + user 
-                self.logData(log_string)
-                continue
-
-            partMatch = re.search(part_string, line)
-            if partMatch:
-                user = partMatch.group(1)
-                channel = partMatch.group(2)
-                log_string = "PART #" + channel + " " + user 
-                self.logData(log_string)
-                continue
-
-            modeMatch = re.search(mode_string, line)
-            if modeMatch:
-                user = modeMatch.group(3)
-                channel = modeMatch.group(1)
-                plus_or_minus = modeMatch.group(2)
-                log_string = "MODE #" + channel + " " + plus_or_minus + "o " + user 
-                self.logData(log_string)
-                continue
-
-            name_list_match = re.search(name_list_string, line)
-            if name_list_match:
-                channel = name_list_match.group(1)
-                log_string = "NAMES #" + channel + ": "
-                for name in name_list_match.group(2).split():
-                    log_string += name + " "
-                self.logData(log_string)
-                continue
-
-            name_list_end_match = re.search(name_list_end_string, line)
-            if name_list_end_match:
-                channel = name_list_end_match.group(1)
-                log_string = "NAMES #" + channel + " End list"
-                self.logData(log_string)
-                continue
-
-            self.logData(line)
-
 
     def logData(self, data):
         """ Timestamps a line of output and send it to the logfile """
@@ -265,5 +201,5 @@ class TwircBot(object):
 
         self.module_list.append(module)
         module_type = type(module).__name__
-        message = "Just added a module of type " + module_type + " named " + module.name + "."
-        print(message)
+        message = "Adding module (name - type): " + module.name + " - " + module_type
+        self.logData(message)

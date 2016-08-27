@@ -11,10 +11,8 @@ except IndexError:
     bot = TwircBot()
 
 
-module = CommandSuite("test")
-logger = LogSuite("logger")
-bot.add_module(module)
-bot.add_module(logger)
+bot.add_module(CommandSuite("test"))
+bot.add_module(LogSuite("logger"))
 
 bot.print_config()
 bot.start()

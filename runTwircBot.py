@@ -3,9 +3,9 @@
 from src.TwircBot import TwircBot
 import sys
 
-if len(sys.argv) >= 2:
+try:
     bot = TwircBot(sys.argv[1])
-else:
+except IndexError:
     bot = TwircBot()
 
 bot.print_config()

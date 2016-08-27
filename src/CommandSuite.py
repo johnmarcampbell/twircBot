@@ -4,7 +4,12 @@ class CommandSuite(object):
     def __init__(self, name):
         """Declare some variables, etc"""
         self.name = name
+        self.config = {}
         print("CommandSuite is starting")
+
+    def start(self):
+        """Function that gets called after __init__ but before a connection is established"""
+        
 
     def parse(self, data):
         """Test method for this suite"""

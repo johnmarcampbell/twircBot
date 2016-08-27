@@ -53,6 +53,8 @@ class TwircBot(object):
         if self.isConnected:
             self.disconnect()
 
+        for module in self.module_list:
+            module.finish()
         finishMessage = "TwircBot is going to sleep now..."
         self.logData(finishMessage)
         

@@ -2,6 +2,7 @@
 
 from src.TwircBot import TwircBot
 from src.CommandModule import CommandModule
+from src.logModule import logModule
 import sys
 
 try:
@@ -11,7 +12,9 @@ except IndexError:
 
 
 module = CommandModule("test")
+logger = logModule("logger")
 bot.add_module(module)
+bot.add_module(logger)
 
 bot.print_config()
 bot.start()

@@ -49,6 +49,7 @@ class TwircBot(object):
 
     def finish(self):
         """Make sure we are disconnect and close log files and everything"""
+        self.stayAlive = False
         if self.isConnected:
             self.disconnect()
 
@@ -200,6 +201,7 @@ class TwircBot(object):
         """Add a command module to TwircBot's module list"""
 
         self.module_list.append(module)
+        module.set_host(self)
         module_type = type(module).__name__
         message = "Adding module (name - type): " + module.name + " - " + module_type
         self.logData(message)

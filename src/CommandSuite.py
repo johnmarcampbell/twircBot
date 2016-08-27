@@ -16,4 +16,7 @@ class CommandSuite(object):
         """Function that gets called as TwircBot is shutting down"""
         print("CommandSuite is finishing")
         
-    
+    def set_host(self, host):
+        """Set the host bot object"""
+
+        self.host = host

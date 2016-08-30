@@ -8,74 +8,76 @@ class ConfigReader(object):
     """
 
     def __init__(self):
-        """TODO: to be defined """
-        self.configuration = {}
-
-        self.config_template = {
-                            'oauth': str,
-                            'nick': str,
-                            'channels': list,
-                            'log': str,
-                            'time_format': str,
-                            'host': str,
-                            'port': int,
-                            'block_size': int,
-                            'reconnect_timer': int,
-                            'stayalive_timer': int,
-                            'connect_timeout': float,
-                            'receive_timeout': float
-                        }
-
+        """Initialize some variables"""
+        self.configs = {}
         
-    def parse_file(self, config_file_name):
+
+    def parse_file(self, config_file_name, is_default = False):
         """
-        Function to read the configuration file and turn parameters into 
-        a dictionary
+        This function opens a file containing one or many configurations
+        and sends the text to parse_text_block()
         """
+
         with open(config_file_name, 'r') as f:
-            lines = f.read()
-            for line in lines.splitlines():
-                self.parse_line(line)
+            text_block = f.read()
+            self.parse_text_block(text_block, is_default)
 
-        self.clean(self.configuration)
-        self.check_keys()
-        return self.configuration
+        self.check_types()
+        return self.configs['default']
 
-    def parse_line(self, line):
-        """Function to parse individual lines of a configuration file"""
+
+    def parse_text_block(self, block, is_default):
+        """
+        This function takes some block of text, and divides it into sections,
+        each of which correspond to one configuration spec. It then calls a
+        function to parse each section.
+        """
+
+        config_name = "default"
+        self.configs[config_name] = ''
+
+        for line in block.splitlines():
+            if len(line) == 0:
+                continue
+            if line[0] == '%':
+                config_name = line[1:]
+                self.configs[config_name] = ''
+            else:
+                self.configs[config_name] += line + '\r\n'
+
+        for key in self.configs:
+            self.configs[key] = self.parse_config_text(self.configs[key])
+
+        if is_default:
+            self.check_default_config()
+
+
+    def parse_config_text(self, text):
+        """
+        This function takes a block of text that corresponds to only *one*
+        config and turns it into a dictionary
+        """
+        config = {}
+        
+        for line in text.splitlines():
+            self.parse_line(line, config)
+
+        return config
+
+
+    def parse_line(self, line, config):
+        """Function to parse individual lines of a config"""
         words = self.split_line(line)
 
-        # Ignore remove semi-colons, etc., used to separate key/values
-        key_string = '([a-zA-z09]+)' 
+        # Remove semi-colons, etc., used to separate key/values
+        key_string = '([a-zA-z0-9]+)' 
         key = re.search(key_string, words[0]).group(1)
 
         values = words[1:]
-        self.configuration[key] = values
+        if len(values) == 1:
+            values = values[0]
+        config[key] = values
     
-    def clean(self, config):
-        """Function to clean a configuration dictionary"""
-                
-        for key in config:
-            value = config[key]
-
-            # All values start out as lists. If they are not lists
-            # it means they've already been cleaned.
-            if type(value) is list:
-                # If we didn't read any parameters, delete the key.
-                # We'll check later whether or not all keys are present
-                if len(value) == 0:
-                    del config[key]
-                    return
-
-                # if there's only 1 value, we don't want it to be a list...
-                # ... except for 'channels' which should always be a list
-                if len(value) == 1 and key != 'channels':
-                    value = value[0]
-
-            value = self.config_template[key](value)
-
-            config[key] = value
-        
     def split_line(self, line):
         """
         This function takes a string and splits it into words, but 
@@ -106,39 +108,28 @@ class ConfigReader(object):
 
         return words
 
-    def check_keys(self):
-        """This function will check the configuration and make sure all mandatory values are present"""
-        # Check that configuration has all necessary keys
-        for key in self.config_template:
-            try:
-                value = self.configuration[key]
-            except KeyError:
-                error_string = "\nError reading config file!!\n"
-                error_string += "Configuration file missing parameter: "
-                error_string += key
-                error_string += '.\nThis *really* shouldn\'t happen! Check the default config.\n'
-                error_string += '\n'
-                print(error_string)
-                raise
+    def check_types(self):
+        """Function to check the types of all parameters"""
 
-            if type(self.configuration[key]) != self.config_template[key]:
-                error_string = '\nError reading config file!!\n'
-                error_string += 'Configuration parameter "'
-                error_string += key
-                error_string += '" shoud be of type '
-                error_string += self.config_template[key].__name__
-                error_string += '. \n'
-                print(error_string)
-                raise TypeError(type(self.configuration[key]))
+        for config in self.configs:
+            if config != 'template':
+                print(self.configs[config])
+                for parameter, init_value in self.configs[config].items():
+                    print(parameter + " " + str(init_value))
 
-        # Check that configuration doesn't have any extraneous keys
-        for key in self.configuration:
-            try:
-                self.config_template[key]
-            except KeyError:
-                error_string = "\nError reading config file!!\n"
-                error_string += "Configuration file tried to set unknown parameter: "
-                error_string += key
-                error_string += '\n'
-                print(error_string)
-                raise
+                    # If value should be a list, convert it
+                    if self.configs['template'][parameter] == 'list' and (type(init_value).__name__ != 'list'):
+                        final_value = [init_value]
+
+                    elif self.configs['template'][parameter] == 'str':
+                        final_value = str(init_value)
+                    elif self.configs['template'][parameter] == 'int':
+                        final_value = int(init_value)
+                    elif self.configs['template'][parameter] == 'float':
+                        final_value = float(init_value)
+                    elif self.configs['template'][parameter] == 'dict':
+                        final_value = dict(init_value)
+                    else:
+                        final_value = init_value
+
+                    self.configs[config][parameter] = final_value

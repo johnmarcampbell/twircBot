@@ -8,12 +8,10 @@ class LogSuite(CommandSuite):
     def __init__(self, name):
         """Init function for logSuite"""
         CommandSuite.__init__(self, name)
+        self.config = self.config_manager.parse_file('config/defaultLogSuite.config')
 
     def start(self):
         """Function that gets called after __init__ but before a connection is established"""
-        self.config['time_format'] = self.host.config['time_format']
-        self.config['log'] = self.host.config['log']
-        self.config['nick'] = self.host.config['nick']
     
     def parse(self, data):
         """ Break up the datastream into lines and decide what to do with them. """

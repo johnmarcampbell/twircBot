@@ -1,3 +1,5 @@
+from src.ConfigReader import ConfigReader
+
 class CommandSuite(object):
     """Abstract class for command suites"""
 
@@ -5,6 +7,7 @@ class CommandSuite(object):
         """Declare some variables, etc"""
         self.name = name
         self.config = {}
+        self.config_manager = ConfigReader()
         print("CommandSuite is starting")
 
     def start(self):

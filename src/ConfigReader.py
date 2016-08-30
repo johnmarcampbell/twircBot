@@ -113,9 +113,7 @@ class ConfigReader(object):
 
         for config in self.configs:
             if config != 'template':
-                print(self.configs[config])
                 for parameter, init_value in self.configs[config].items():
-                    print(parameter + " " + str(init_value))
 
                     # If value should be a list, convert it
                     if self.configs['template'][parameter] == 'list' and (type(init_value).__name__ != 'list'):

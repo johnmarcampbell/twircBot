@@ -20,7 +20,13 @@ class ConfigReader(object):
 
         with open(config_file_name, 'r') as f:
             text_block = f.read()
-            self.parse_text_block(text_block, is_default)
+            file_configs = self.parse_text_block(text_block, is_default)
+
+        for config in file_configs:
+            if config in self.configs.keys():
+                self.configs[config].update(file_configs[config])
+            else:
+                self.configs[config] = file_configs[config]
 
         self.check_types()
         return self.configs['default']
@@ -33,23 +39,25 @@ class ConfigReader(object):
         function to parse each section.
         """
 
+        configs = {}
         config_name = "default"
-        self.configs[config_name] = ''
+        configs[config_name] = ''
 
         for line in block.splitlines():
             if len(line) == 0:
                 continue
             if line[0] == '%':
                 config_name = line[1:]
-                self.configs[config_name] = ''
+                configs[config_name] = ''
             else:
-                self.configs[config_name] += line + '\r\n'
+                configs[config_name] += line + '\r\n'
 
-        for key in self.configs:
-            self.configs[key] = self.parse_config_text(self.configs[key])
+        for key in configs:
+            configs[key] = self.parse_config_text(configs[key])
 
-        if is_default:
-            self.check_default_config()
+        return configs
+        # if is_default:
+            # self.check_default_config()
 
 
     def parse_config_text(self, text):

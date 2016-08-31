@@ -22,6 +22,7 @@ class TwircBot(object):
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
             self.config = reader.parse_file(config_file_name)
+            print(self.config)
 
     def start(self):
         """Connect to twitch chat and start listening"""

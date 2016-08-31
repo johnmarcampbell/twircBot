@@ -10,46 +10,46 @@ class DiceRollerSuite(CommandSuite):
         CommandSuite.__init__(self, name)
         self.config = self.config_manager.parse_file('config/defaultLogSuite.config')
         random.seed()
-        self.invoke_match_string = '\!([0-9]+)d([0-9]+)'
-        self.invoke_modified_match_string = '\![0-9]+d[0-9]+([+]|[-])([0-9]+)'
+        self.dice_roll_string = '\!([0-9]+)d([0-9]+)([+]|[-])?([0-9]*)'
         self.invoke_coin_match = '\!flip'
     
     def parse(self, data):
         """Parse chat data and log it"""
         self.chat_tuple = self.parse_chat(data, self.config['nick'])
         message = self.chat_tuple[1]
-        base_match = re.search(self.invoke_match_string, data)
-        modifier_match = re.search(self.invoke_modified_match_string, data)
+        dice_roll_match = re.search(self.dice_roll_string, data)
         coin_flip_match = re.search(self.invoke_coin_match, data)
         number_of_dice = 0
         die_size = 0
         plus_or_minus = ''
         modifier = 0
 
-        if base_match:
-            number_of_dice = int(base_match.group(1))
-            die_size = int(base_match.group(2))
-
-            if modifier_match:
-                plus_or_minus = modifier_match.group(1) 
-                modifier = int(modifier_match.group(2))
-
-            total = self.roll_dice(number_of_dice, die_size, plus_or_minus, modifier)
-
+        if dice_roll_match:
+            total = self.roll_dice(dice_roll_match)
             print(str(total))
+
+            # print(str(total))
         if coin_flip_match:
             heads_or_tails = self.flip_coin()
 
             print(heads_or_tails)
 
         
-    def roll_dice(self, number_of_dice, die_size, plus_or_minus, modifier):
+    def roll_dice(self, dice_roll_match):
         """Function to roll a dice pool"""
+
+        (pool, die, plus_or_minus, modifier) = dice_roll_match.groups()
+        pool = int(pool)
+        die = int(die)
+        if modifier == '':
+            modifier = 0
+        else:
+            modifier = int(modifier)
 
         total = 0
 
-        for i in range(0,number_of_dice):
-            total += random.randint(1,die_size)
+        for i in range(0, pool):
+            total += random.randint(1, die)
 
         if plus_or_minus == '+':
             total += modifier
@@ -57,6 +57,7 @@ class DiceRollerSuite(CommandSuite):
             total -= modifier
 
         return total
+        # return 0
 
     def flip_coin(self):
         """Function to flip a coin"""

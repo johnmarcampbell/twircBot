@@ -12,75 +12,42 @@ class LogSuite(CommandSuite):
 
     def start(self):
         """Function that gets called after __init__ but before a connection is established"""
-    
+
     def parse(self, data):
-        """ Break up the datastream into lines and decide what to do with them. """
-
-        for line in data.splitlines():
-            words = line.split()
-
-            # Define some regex search strings
-            privmsg_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PRIVMSG \#(\S+) :(.*)'
-            join_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv JOIN \#(\S+)'
-            part_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PART \#(\S+)'
-            mode_string = ':jtv MODE \#(\S+) ([+]|[-])o (\S+)'
-            name_list_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 353 ' + self.config['nick'] + ' \= \#(\S+) :(.*)'
-            name_list_end_string = ':' + self.config['nick'] + '\.tmi\.twitch\.tv 366 ' + self.config['nick'] + ' \#(\S+) :End of \/NAMES list'
-
-            privmsgMatch = re.search(privmsg_string, line)
-            if privmsgMatch:
-                user = privmsgMatch.group(1)
-                channel = privmsgMatch.group(2)
-                message = privmsgMatch.group(3)
-                log_string = "PRIVMSG #" + channel + " " + user + ": " + message
-                self.logData(log_string)
-
-            joinMatch = re.search(join_string, line)
-            if joinMatch:
-                user = joinMatch.group(1)
-                channel = joinMatch.group(2)
-                log_string = "JOIN #" + channel + " " + user 
-                self.logData(log_string)
-                continue
-
-            partMatch = re.search(part_string, line)
-            if partMatch:
-                user = partMatch.group(1)
-                channel = partMatch.group(2)
-                log_string = "PART #" + channel + " " + user 
-                self.logData(log_string)
-                continue
-
-            modeMatch = re.search(mode_string, line)
-            if modeMatch:
-                user = modeMatch.group(3)
-                channel = modeMatch.group(1)
-                plus_or_minus = modeMatch.group(2)
-                log_string = "MODE #" + channel + " " + plus_or_minus + "o " + user 
-                self.logData(log_string)
-                continue
-
-            name_list_match = re.search(name_list_string, line)
-            if name_list_match:
-                channel = name_list_match.group(1)
-                log_string = "NAMES #" + channel + ": "
-                for name in name_list_match.group(2).split():
-                    log_string += name + " "
-                self.logData(log_string)
-                continue
-
-            name_list_end_match = re.search(name_list_end_string, line)
-            if name_list_end_match:
-                channel = name_list_end_match.group(1)
-                log_string = "NAMES #" + channel + " End list"
-                self.logData(log_string)
-                continue
-
-            self.logData(line)
+        """Parse chat data and log it"""
+        self.chat_tuple = self.parse_chat(data, self.config['nick'])
+        print(self.chat_tuple)
+        self.logData(self.chat_tuple)
 
     def logData(self, data):
         """ Timestamps a line of output and send it to the logfile """
         current_time = dt.strftime(dt.utcnow(), self.config['time_format'])
+        
+        [message_type, message, channel, user] = data
+
+        if message_type == 'privmsg':
+            log_string = "PRIVMSG #" + channel + " " + user + ": " + message
+        elif message_type == 'join':
+            log_string = "JOIN #" + channel + " " + user 
+        elif message_type == 'part':
+            log_string = "PART #" + channel + " " + user 
+        elif message_type == 'mode':
+            log_string = "MODE #" + channel + " " + message + "o " + user 
+        elif message_type == 'ping':
+            log_string = message
+        elif message_type == 'names_start':
+            log_string = "NAMES #" + channel + ": "
+            for name in name_list_match.group(2).split():
+                log_string += name + " "
+        elif message_type == 'names_end':
+            log_string = "NAMES #" + channel + " End list"
+        elif message_type == 'unknown':
+            log_string = "UNKOWN #" + message
+        else:
+            log_string = str(data)
+
         log_file = open(self.config['log'],"a")
-        log_file.write(current_time + " " + data + "\n")
+        for line in log_string.splitlines():
+            log_file.write(current_time + " " + line + "\n")
+
         log_file.close()

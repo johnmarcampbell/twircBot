@@ -8,17 +8,21 @@ class DiceRollerSuite(CommandSuite):
     def __init__(self, name):
         """Initialize some variables"""
         CommandSuite.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultLogSuite.config')
+        self.config = self.config_manager.parse_file('config/defaultDiceRollerSuite.config')
         random.seed()
-        self.dice_roll_string = '\!([0-9]+)d([0-9]+)([+]|[-])?([0-9]*)'
-        self.invoke_coin_match = '\!flip'
+        # self.dice_roll_match = '\$([0-9]+)d([0-9]+)([+]|[-])?([0-9]*)'
+        self.dice_roll_string = '\\' + self.config['invoke_string'] + self.config['dice_roll_suffix']
+        self.coin_flip_string = '\\' + self.config['invoke_string'] + self.config['coin_flip_suffix']
+        print(self.coin_flip_string)
+        print(self.dice_roll_string)
     
     def parse(self, data):
         """Parse chat data and log it"""
         self.chat_tuple = self.parse_chat(data, self.config['nick'])
         message = self.chat_tuple[1]
+        channel = self.chat_tuple[2]
         dice_roll_match = re.search(self.dice_roll_string, data)
-        coin_flip_match = re.search(self.invoke_coin_match, data)
+        coin_flip_match = re.search(self.coin_flip_string, data)
         number_of_dice = 0
         die_size = 0
         plus_or_minus = ''
@@ -26,13 +30,12 @@ class DiceRollerSuite(CommandSuite):
 
         if dice_roll_match:
             total = self.roll_dice(dice_roll_match)
-            print(str(total))
+            self.host.privmsg(channel, str(total))
 
             # print(str(total))
         if coin_flip_match:
             heads_or_tails = self.flip_coin()
-
-            print(heads_or_tails)
+            self.host.privmsg(channel, heads_or_tails)
 
         
     def roll_dice(self, dice_roll_match):

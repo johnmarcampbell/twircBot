@@ -16,7 +16,6 @@ class LogSuite(CommandSuite):
     def parse(self, data):
         """Parse chat data and log it"""
         self.chat_tuple = self.parse_chat(data, self.config['nick'])
-        print(self.chat_tuple)
         self.logData(self.chat_tuple)
 
     def logData(self, data):

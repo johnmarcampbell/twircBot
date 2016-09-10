@@ -10,11 +10,8 @@ class DiceRollerSuite(CommandSuite):
         CommandSuite.__init__(self, name)
         self.config = self.config_manager.parse_file('config/defaultDiceRollerSuite.config')
         random.seed()
-        # self.dice_roll_match = '\$([0-9]+)d([0-9]+)([+]|[-])?([0-9]*)'
         self.dice_roll_string = '\\' + self.config['invoke_string'] + self.config['dice_roll_suffix']
         self.coin_flip_string = '\\' + self.config['invoke_string'] + self.config['coin_flip_suffix']
-        print(self.coin_flip_string)
-        print(self.dice_roll_string)
     
     def parse(self, data):
         """Parse chat data and log it"""
@@ -32,7 +29,6 @@ class DiceRollerSuite(CommandSuite):
             total = self.roll_dice(dice_roll_match)
             self.host.privmsg(channel, str(total))
 
-            # print(str(total))
         if coin_flip_match:
             heads_or_tails = self.flip_coin()
             self.host.privmsg(channel, heads_or_tails)
@@ -60,7 +56,6 @@ class DiceRollerSuite(CommandSuite):
             total -= modifier
 
         return total
-        # return 0
 
     def flip_coin(self):
         """Function to flip a coin"""
@@ -72,4 +67,3 @@ class DiceRollerSuite(CommandSuite):
             heads_or_tails = 'tails'
 
         return heads_or_tails
-        

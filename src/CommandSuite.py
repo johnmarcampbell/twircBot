@@ -9,7 +9,7 @@ class CommandSuite(object):
         self.name = name
         self.config = {}
         self.config_manager = ConfigReader()
-        print("CommandSuite is starting")
+        self.config = self.config_manager.parse_file('config/defaultCommandSuite.config')
 
     def start(self):
         """Function that gets called after __init__ but before a connection is established"""
@@ -22,7 +22,6 @@ class CommandSuite(object):
 
     def finish(self):
         """Function that gets called as TwircBot is shutting down"""
-        print("CommandSuite is finishing")
         
     def set_host(self, host):
         """Set the host bot object"""
@@ -41,19 +40,14 @@ class CommandSuite(object):
             words = line.split()
 
             # Define some regex search strings
-            privmsg_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PRIVMSG \#(\S+) :(.*)'
-            join_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv JOIN \#(\S+)'
-            part_string = ':(\S+)!\S+@\S+\.tmi\.twitch\.tv PART \#(\S+)'
-            mode_string = ':jtv MODE \#(\S+) ([+]|[-])o (\S+)'
-            ping_string = 'PING :tmi.twitch.tv'
-            name_list_string = ':' + nick + '\.tmi\.twitch\.tv 353 ' + nick + ' \= \#(\S+) :(.*)'
-            name_list_end_string = ':' + nick + '\.tmi\.twitch\.tv 366 ' + nick + ' \#(\S+) :End of \/NAMES list'
+            name_list_string = ':' + nick + self.config['name_list_prefix'] + nick + self.config['name_list_prefix']
+            name_list_end_string = ':' + nick + self.config['name_list_end_prefix'] + nick + self.config['name_list_end_prefix']
 
-            privmsgMatch = re.search(privmsg_string, line)
-            joinMatch = re.search(join_string, line)
-            partMatch = re.search(part_string, line)
-            modeMatch = re.search(mode_string, line)
-            pingMatch = re.search(ping_string, line)
+            privmsgMatch = re.search(self.config['privmsg_string'], line)
+            joinMatch = re.search(self.config['join_string'], line)
+            partMatch = re.search(self.config['part_string'], line)
+            modeMatch = re.search(self.config['mode_string'], line)
+            pingMatch = re.search(self.config['ping_string'], line)
             name_list_match = re.search(name_list_string, line)
             name_list_end_match = re.search(name_list_end_string, line)
 

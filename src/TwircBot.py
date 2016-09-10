@@ -84,7 +84,8 @@ class TwircBot(object):
         self.send(nick_string) 
         self.send(cap_req_string) 
 
-        self.isConnected = True;
+        self.isConnected = True
+        self.reconnect = False
 
         for channel in self.config['channels']:
             self.join(channel)
@@ -185,22 +186,8 @@ class TwircBot(object):
     def checkTimers(self):
         """Check the various state timers and determine if we need to take action"""
 
-        # Check reconnect time
-        now = dt.utcnow()
-        inputDelta = now - self.last_data
-        lifetime = now - self.bornTime
-
-        if inputDelta.seconds > self.config['reconnect_timer']:
-            log_message = "Reconnect time is up. Time to reconnect!"
-            self.logData(log_message)
-            self.reconnect = True
-        else:
-            self.reconnect = False
-
-        if lifetime.seconds > self.config['stayalive_timer'] and self.config['stayalive_timer'] > 0:
-            log_message = "StayAlive time is up. Time to go to sleep!"
-            self.logData(log_message)
-            self.stayAlive = False
+        for suite in self.suite_list:
+            suite.check_timers()
 
     def add_suite(self, suite):
         """Add a command suite to TwircBot's suite list"""

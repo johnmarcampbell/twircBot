@@ -109,3 +109,7 @@ class CommandSuite(object):
             
 
         return [message_type, message, channel, user]
+
+    def check_timers(self):
+        """Function for checking timers"""
+        

@@ -22,7 +22,6 @@ class TwircBot(object):
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
             self.config = reader.parse_file(config_file_name)
-            print(self.config)
 
     def start(self):
         """Connect to twitch chat and start listening"""
@@ -71,7 +70,8 @@ class TwircBot(object):
         user_string = 'USER ' + self.config['nick']
         nick_string = 'NICK ' + self.config['nick']
         oauth_string = 'PASS oauth:' + self.config['oauth']
-        cap_req_string = 'CAP REQ :twitch.tv/membership'
+        member_string = 'CAP REQ :twitch.tv/membership'
+        command_string = 'CAP REQ :twitch.tv/commands'
 
         self.irc = socket.socket()
         self.irc.settimeout(self.config['connect_timeout'])
@@ -82,7 +82,8 @@ class TwircBot(object):
         self.send(user_string) 
         self.send(oauth_string) 
         self.send(nick_string) 
-        self.send(cap_req_string) 
+        self.send(member_string) 
+        self.send(command_string) 
 
         self.isConnected = True
         self.reconnect = False

@@ -22,8 +22,8 @@ class ConnectivityMonitorSuite(CommandSuite):
         self.last_data = dt.utcnow()
 
         if uptime_match:
-            # print(self.lifetime.seconds)
-            self.host.privmsg(channel, str(self.lifetime))
+            uptime_message = 'Uptime: ' + str(self.lifetime)
+            self.host.privmsg(channel, uptime_message)
 
     def check_timers(self):
         """Function to check timers"""
@@ -40,4 +40,3 @@ class ConnectivityMonitorSuite(CommandSuite):
 
         if self.lifetime.seconds > self.config['stayalive_timer'] and self.config['stayalive_timer'] > 0:
             self.host.stayAlive = False
-            # print("I want to die")

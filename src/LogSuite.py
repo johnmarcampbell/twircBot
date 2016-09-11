@@ -1,6 +1,8 @@
 import re
 from datetime import datetime as dt
 from src.CommandSuite import CommandSuite
+from src.twitchtools import parse_wrapper
+from src.twitchtools import ServerData
 
 class LogSuite(CommandSuite):
     """Suite for logging chat data"""
@@ -13,9 +15,10 @@ class LogSuite(CommandSuite):
     def start(self):
         """Function that gets called after __init__ but before a connection is established"""
 
+    @parse_wrapper
     def parse(self, data):
         """Parse chat data and log it"""
-        self.chat_tuple = self.parse_chat(data, self.config['nick'])
+        self.chat_tuple = (data.type, data.content, data.channel, data.user)
         self.logData(self.chat_tuple)
 
     def logData(self, data):

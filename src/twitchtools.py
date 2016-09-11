@@ -1,6 +1,14 @@
 import re
 from src.ConfigReader import ConfigReader
 
+class ServerBlock(object):
+    """Object that represents a processed block of data from the Twitch IRC server"""
+
+    def __init__(self, raw_data, message_list):
+        """Set some initial variables"""
+        self.raw_data = raw_data
+        self.message_list = message_list
+    
 class ServerData(object):
     """Object to represent a message from Twitch IRC servers"""
 
@@ -101,7 +109,17 @@ class DataParser(object):
 
             else:
                 data_type = 'unknown'
+                content = line
 
             data_list.append(ServerData(line, d_type = data_type, channel = channel, user = user, content = content))
 
-        return (data, data_list)
+        return ServerBlock(data, data_list)
+
+def parse_wrapper(f):
+    """A generic wrapper that splits up different lines of chat"""
+    def wrapper(self, server_block):
+
+        for data in server_block.message_list:
+            f(self, data)
+
+    return wrapper

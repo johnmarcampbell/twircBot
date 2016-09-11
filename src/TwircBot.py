@@ -171,16 +171,17 @@ class TwircBot(object):
     
     def processData(self, raw_data):
         """ Break up the datastream into lines and decide what to do with them. """
-        serverdata = self.parser.parse(raw_data)
+        serverblock = self.parser.parse(raw_data)
 
         for suite in self.suite_list:
-            suite.parse(raw_data)
+            suite.parse(serverblock)
+            # suite.parse(raw_data)
 
-        for line in raw_data.splitlines():
-            words = line.split()
-            if words[0] == 'PING':
-                self.pong()
-                self.logData(line)
+        # for line in raw_data.splitlines():
+        #     words = line.split()
+        #     if words[0] == 'PING':
+        #         self.pong()
+        #         self.logData(line)
 
     def logData(self, data):
         """ Timestamps a line of output and send it to the logfile """

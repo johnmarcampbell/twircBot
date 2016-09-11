@@ -28,9 +28,6 @@ class TwircBot(object):
 
     def start(self):
         """Connect to twitch chat and start listening"""
-        for suite in self.suite_list:
-            suite.start()
-
         self.connect()
 
         temp_data = ''

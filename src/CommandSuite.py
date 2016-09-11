@@ -11,10 +11,6 @@ class CommandSuite(object):
         self.config_manager = ConfigReader()
         self.config = self.config_manager.parse_file('config/defaultCommandSuite.config')
 
-    def start(self):
-        """Function that gets called after __init__ but before a connection is established"""
-        
-
     def parse(self, data):
         """Test method for this suite"""
 

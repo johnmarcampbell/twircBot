@@ -12,9 +12,6 @@ class LogSuite(CommandSuite):
         CommandSuite.__init__(self, name)
         self.config = self.config_manager.parse_file('config/defaultLogSuite.config')
 
-    def start(self):
-        """Function that gets called after __init__ but before a connection is established"""
-
     @parse_wrapper
     def parse(self, data):
         """Parse chat data and log it"""

@@ -2,7 +2,6 @@ import re
 from datetime import datetime as dt
 from src.CommandSuite import CommandSuite
 from src.twitchtools import parse_wrapper
-from src.twitchtools import ServerData
 
 class LogSuite(CommandSuite):
     """Suite for logging chat data"""

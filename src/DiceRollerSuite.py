@@ -1,6 +1,7 @@
 import random
 import re
 from src.CommandSuite import CommandSuite
+from src.twitchtools import parse_wrapper
 
 class DiceRollerSuite(CommandSuite):
     """Suite for rolling dice"""
@@ -13,25 +14,24 @@ class DiceRollerSuite(CommandSuite):
         self.dice_roll_string = '\\' + self.config['invoke_string'] + self.config['dice_roll_suffix']
         self.coin_flip_string = '\\' + self.config['invoke_string'] + self.config['coin_flip_suffix']
     
+    @parse_wrapper
     def parse(self, data):
-        """Parse chat data and log it"""
-        self.chat_tuple = self.parse_chat(data, self.config['nick'])
-        message = self.chat_tuple[1]
-        channel = self.chat_tuple[2]
-        dice_roll_match = re.search(self.dice_roll_string, data)
-        coin_flip_match = re.search(self.coin_flip_string, data)
-        number_of_dice = 0
-        die_size = 0
-        plus_or_minus = ''
-        modifier = 0
+        """Parse chat data and look for dice-rolley type messages"""
+        if data.type == 'privmsg':
+            dice_roll_match = re.search(self.dice_roll_string, data.content)
+            coin_flip_match = re.search(self.coin_flip_string, data.content)
+            number_of_dice = 0
+            die_size = 0
+            plus_or_minus = ''
+            modifier = 0
 
-        if dice_roll_match:
-            total = self.roll_dice(dice_roll_match)
-            self.host.privmsg(channel, str(total))
+            if dice_roll_match:
+                total = self.roll_dice(dice_roll_match)
+                self.host.privmsg(data.channel, str(total))
 
-        if coin_flip_match:
-            heads_or_tails = self.flip_coin()
-            self.host.privmsg(channel, heads_or_tails)
+            if coin_flip_match:
+                heads_or_tails = self.flip_coin()
+                self.host.privmsg(data.channel, heads_or_tails)
 
         
     def roll_dice(self, dice_roll_match):

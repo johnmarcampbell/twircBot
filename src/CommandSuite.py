@@ -1,5 +1,6 @@
 import re
 from src.ConfigReader import ConfigReader
+from src.twitchtools import ServerData
 
 class CommandSuite(object):
     """Abstract class for command suites"""

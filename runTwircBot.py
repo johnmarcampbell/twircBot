@@ -12,7 +12,7 @@ except IndexError:
     bot = TwircBot()
 
 
-# bot.add_suite(ConnectivityMonitorSuite("connectionMonitor"))
+bot.add_suite(ConnectivityMonitorSuite("connectionMonitor"))
 bot.add_suite(DiceRollerSuite("diceRoller"))
 bot.add_suite(LogSuite("logger"))
 

@@ -3,6 +3,7 @@ import sys
 import re
 from datetime import datetime as dt
 from .ConfigReader import ConfigReader as cr
+from .twitchtools import DataParser as dp
 
 
 class TwircBot(object):
@@ -22,6 +23,8 @@ class TwircBot(object):
         self.config = reader.parse_file("config/default.config")
         if( config_file_name ):
             self.config = reader.parse_file(config_file_name)
+
+        self.parser = dp(self.config['nick'])
 
     def start(self):
         """Connect to twitch chat and start listening"""
@@ -166,12 +169,14 @@ class TwircBot(object):
         """ Leave a channel. """
         self.send('PART #' + channel)
     
-    def processData(self, data):
+    def processData(self, raw_data):
         """ Break up the datastream into lines and decide what to do with them. """
-        for suite in self.suite_list:
-            suite.parse(data)
+        serverdata = self.parser.parse(raw_data)
 
-        for line in data.splitlines():
+        for suite in self.suite_list:
+            suite.parse(raw_data)
+
+        for line in raw_data.splitlines():
             words = line.split()
             if words[0] == 'PING':
                 self.pong()

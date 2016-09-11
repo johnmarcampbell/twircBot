@@ -1,4 +1,4 @@
-from ConfigReader import ConfigReader as cr
+from configreader import ConfigReader as cr
 import unittest
 import os
 

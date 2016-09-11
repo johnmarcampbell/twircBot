@@ -1,15 +1,15 @@
 import re
 from datetime import datetime as dt
-from src.CommandSuite import CommandSuite
-from src.twitchtools import parse_wrapper
+from .botmodule import BotModule
+from .twitchtools import parse_wrapper
 
-class LogSuite(CommandSuite):
-    """Suite for logging chat data"""
+class Logger(BotModule):
+    """Module for logging chat data"""
 
     def __init__(self, name):
-        """Init function for logSuite"""
-        CommandSuite.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultLogSuite.config')
+        """Init function for Logger"""
+        BotModule.__init__(self, name)
+        self.config = self.config_manager.parse_file('config/defaultLogger.config')
 
     @parse_wrapper
     def parse(self, data):

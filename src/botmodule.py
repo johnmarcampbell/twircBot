@@ -1,19 +1,19 @@
 import re
-from src.ConfigReader import ConfigReader
-from src.twitchtools import ServerData
+from .configreader import ConfigReader
+from .twitchtools import ServerData
 
-class CommandSuite(object):
-    """Abstract class for command suites"""
+class BotModule(object):
+    """Abstract class for modules"""
 
     def __init__(self, name):
         """Declare some variables, etc"""
         self.name = name
         self.config = {}
         self.config_manager = ConfigReader()
-        self.config = self.config_manager.parse_file('config/defaultCommandSuite.config')
+        self.config = self.config_manager.parse_file('config/defaultBotModule.config')
 
     def parse(self, data):
-        """Test method for this suite"""
+        """Test method for this module"""
 
         self.data = data
 

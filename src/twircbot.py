@@ -2,7 +2,7 @@ import socket
 import sys
 import re
 from datetime import datetime as dt
-from .ConfigReader import ConfigReader as cr
+from .configreader import ConfigReader as cr
 from .twitchtools import DataParser as dp
 
 

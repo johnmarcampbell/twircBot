@@ -1,15 +1,15 @@
 from datetime import datetime as dt
 import re
-from src.CommandSuite import CommandSuite
-from src.twitchtools import parse_wrapper
+from .botmodule import BotModule
+from .twitchtools import parse_wrapper
 
-class ConnectivityMonitorSuite(CommandSuite):
-    """Suite for monitor health of connection to chat"""
+class ConnectivityMonitor(BotModule):
+    """Module for monitor health of connection to chat"""
 
     def __init__(self, name):
-        """Init function for ConnectivityMonitorSuite"""
-        CommandSuite.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultConnectivityManagerSuite.config')
+        """Init function for ConnectivityMonitor"""
+        BotModule.__init__(self, name)
+        self.config = self.config_manager.parse_file('config/defaultConnectivityMonitor.config')
         self.uptime_string = '\\' + self.config['invoke_string'] + self.config['uptime_suffix']
         self.bornTime = dt.utcnow()
         self.last_data = dt.utcnow()

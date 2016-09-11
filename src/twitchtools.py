@@ -1,5 +1,5 @@
 import re
-from src.ConfigReader import ConfigReader
+from src.configreader import ConfigReader
 
 class ServerBlock(object):
     """Object that represents a processed block of data from the Twitch IRC server"""

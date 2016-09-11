@@ -1,15 +1,15 @@
 import random
 import re
-from src.CommandSuite import CommandSuite
-from src.twitchtools import parse_wrapper
+from .botmodule import BotModule
+from .twitchtools import parse_wrapper
 
-class DiceRollerSuite(CommandSuite):
-    """Suite for rolling dice"""
+class DiceRoller(BotModule):
+    """Module for rolling dice"""
 
     def __init__(self, name):
         """Initialize some variables"""
-        CommandSuite.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultDiceRollerSuite.config')
+        BotModule.__init__(self, name)
+        self.config = self.config_manager.parse_file('config/defaultDiceRoller.config')
         random.seed()
         self.dice_roll_string = '\\' + self.config['invoke_string'] + self.config['dice_roll_suffix']
         self.coin_flip_string = '\\' + self.config['invoke_string'] + self.config['coin_flip_suffix']

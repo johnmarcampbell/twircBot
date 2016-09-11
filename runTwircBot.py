@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from src.TwircBot import TwircBot
-from src.DiceRollerSuite import DiceRollerSuite
-from src.ConnectivityMonitorSuite import ConnectivityMonitorSuite
-from src.LogSuite import LogSuite
+from src.twircbot import TwircBot
+from src.diceroller import DiceRoller
+from src.connectivitymonitor import ConnectivityMonitor
+from src.logger import Logger
 import sys
 
 try:
@@ -12,8 +12,8 @@ except IndexError:
     bot = TwircBot()
 
 
-bot.add_suite(ConnectivityMonitorSuite("connectionMonitor"))
-bot.add_suite(DiceRollerSuite("diceRoller"))
-bot.add_suite(LogSuite("logger"))
+bot.add_suite(ConnectivityMonitor("connectionMonitor"))
+bot.add_suite(DiceRoller("diceRoller"))
+bot.add_suite(Logger("logger"))
 
 bot.start()

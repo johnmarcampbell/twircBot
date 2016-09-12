@@ -14,39 +14,32 @@ class Logger(BotModule):
     @parse_wrapper
     def parse(self, data):
         """Parse chat data and log it"""
-        self.chat_tuple = (data.type, data.content, data.channel, data.user)
-        self.logData(self.chat_tuple)
-
-    def logData(self, data):
-        """ Timestamps a line of output and send it to the logfile """
         current_time = dt.strftime(dt.utcnow(), self.config['time_format'])
         
-        [message_type, message, channel, user] = data
-
-        if message_type == 'privmsg':
-            log_string = "PRIVMSG #" + channel + " " + user + ": " + message
-        elif message_type == 'join':
-            log_string = "JOIN #" + channel + " " + user 
-        elif message_type == 'part':
-            log_string = "PART #" + channel + " " + user 
-        elif message_type == 'mode':
-            log_string = "MODE #" + channel + " " + message + "o " + user 
-        elif message_type == 'ping':
+        if data.type == 'privmsg':
+            log_string = "PRIVMSG #" + data.channel + " " + data.user + ": " + data.content
+        elif data.type == 'join':
+            log_string = "JOIN #" + data.channel + " " + data.user 
+        elif data.type == 'part':
+            log_string = "PART #" + data.channel + " " + data.user 
+        elif data.type == 'mode':
+            log_string = "MODE #" + data.channel + " " + data.content+ "o " + data.user 
+        elif data.type == 'ping':
             log_string = 'PING'
-        elif message_type == 'names_start':
-            log_string = "NAMES #" + channel + ": " + message
-        elif message_type == 'names_end':
-            log_string = "NAMES #" + channel + " End list"
-        elif message_type == 'cap':
-            log_string = "CAP #" + message
-        elif message_type == 'greet':
-            log_string = "GREET #" + message
-        elif message_type == 'roomstate':
-            log_string = "ROOMSTATE #" + message
-        elif message_type == 'unknown':
-            log_string = "UNKOWN #" + message
+        elif data.type == 'names_start':
+            log_string = "NAMES #" + data.channel + ": " + data.content
+        elif data.type == 'names_end':
+            log_string = "NAMES #" + data.channel + " End list"
+        elif data.type == 'cap':
+            log_string = "CAP #" + data.content
+        elif data.type == 'greet':
+            log_string = "GREET #" + data.content
+        elif data.type == 'roomstate':
+            log_string = "ROOMSTATE #" + data.content
+        elif data.type == 'unknown':
+            log_string = "UNKOWN #" + data.raw
         else:
-            log_string = str(data)
+            log_string = str(data.raw)
 
         log_file = open(self.config['log'],"a")
         log_file.write(current_time + " " + log_string + "\n")

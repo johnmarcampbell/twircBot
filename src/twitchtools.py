@@ -42,9 +42,10 @@ class DataParser(object):
         self.config_manager = ConfigReader()
         self.config = self.config_manager.parse_file('config/twitchtools.config')
         self.nick = nick
-        self.config['name_list_string'] = ':' + nick + self.config['name_list_prefix'] + nick + self.config['name_list_prefix']
-        self.config['name_list_end_string'] = ':' + nick + self.config['name_list_end_prefix'] + nick + self.config['name_list_end_prefix']
+        self.config['name_list_string'] = ':' + nick + self.config['name_list_prefix'] + nick + self.config['name_list_suffix']
+        self.config['name_list_end_string'] = ':' + nick + self.config['name_list_end_prefix'] + nick + self.config['name_list_end_suffix']
         self.config['whisper_string'] = self.config['whisper_prefix'] + nick + ' :(.*)'
+        self.config['greet_string'] = self.config['greet_prefix'] + nick + ' :(.*)'
 
     def parse(self, data):
         """Function to parse server data"""
@@ -66,6 +67,9 @@ class DataParser(object):
             pingMatch = re.search(self.config['ping_string'], line)
             name_list_match = re.search(self.config['name_list_string'], line)
             name_list_end_match = re.search(self.config['name_list_end_string'], line)
+            greet_match = re.search(self.config['greet_string'], line)
+            cap_match = re.search(self.config['cap_string'], line)
+            roomstate_match = re.search(self.config['roomstate_string'], line)
 
             if privmsgMatch:
                 user = privmsgMatch.group(1)
@@ -106,6 +110,18 @@ class DataParser(object):
             elif name_list_end_match:
                 channel = name_list_end_match.group(1)
                 data_type = 'names_end'
+
+            elif greet_match:
+                content = greet_match.group(2)
+                data_type = 'greet'
+
+            elif cap_match:
+                content = cap_match.group(1)
+                data_type = 'cap'
+
+            elif roomstate_match:
+                content = roomstate_match.group(1)
+                data_type = 'roomstate'
 
             else:
                 data_type = 'unknown'

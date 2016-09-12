@@ -34,11 +34,15 @@ class Logger(BotModule):
         elif message_type == 'ping':
             log_string = message
         elif message_type == 'names_start':
-            log_string = "NAMES #" + channel + ": "
-            for name in name_list_match.group(2).split():
-                log_string += name + " "
+            log_string = "NAMES #" + channel + ": " + message
         elif message_type == 'names_end':
             log_string = "NAMES #" + channel + " End list"
+        elif message_type == 'cap':
+            log_string = "CAP #" + message
+        elif message_type == 'greet':
+            log_string = "GREET #" + message
+        elif message_type == 'roomstate':
+            log_string = "ROOMSTATE #" + message
         elif message_type == 'unknown':
             log_string = "UNKOWN #" + message
         else:

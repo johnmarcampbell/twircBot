@@ -32,7 +32,7 @@ class Logger(BotModule):
         elif message_type == 'mode':
             log_string = "MODE #" + channel + " " + message + "o " + user 
         elif message_type == 'ping':
-            log_string = message
+            log_string = 'PING'
         elif message_type == 'names_start':
             log_string = "NAMES #" + channel + ": " + message
         elif message_type == 'names_end':
@@ -49,7 +49,5 @@ class Logger(BotModule):
             log_string = str(data)
 
         log_file = open(self.config['log'],"a")
-        for line in log_string.splitlines():
-            log_file.write(current_time + " " + line + "\n")
-
+        log_file.write(current_time + " " + log_string + "\n")
         log_file.close()

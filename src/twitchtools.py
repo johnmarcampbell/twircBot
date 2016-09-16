@@ -44,7 +44,6 @@ class DataParser(object):
         self.nick = nick
         self.config['name_list_string'] = ':' + nick + self.config['name_list_prefix'] + nick + self.config['name_list_suffix']
         self.config['name_list_end_string'] = ':' + nick + self.config['name_list_end_prefix'] + nick + self.config['name_list_end_suffix']
-        self.config['whisper_string'] = self.config['whisper_prefix'] + nick + ' :(.*)'
         self.config['greet_string'] = self.config['greet_prefix'] + nick + ' :(.*)'
 
     def parse(self, data):
@@ -80,7 +79,7 @@ class DataParser(object):
 
             elif whisperMatch:
                 user = whisperMatch.group(1)
-                content = whisperMatch.group(2)
+                content = whisperMatch.group(3)
                 data_type = 'whisper'
 
             elif joinMatch:

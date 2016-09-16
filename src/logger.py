@@ -18,6 +18,8 @@ class Logger(BotModule):
         
         if data.type == 'privmsg':
             log_string = "PRIVMSG #" + data.channel + " " + data.user + ": " + data.content
+        if data.type == 'whisper':
+            log_string = "WHISPER " + data.user + ": " + data.content
         elif data.type == 'join':
             log_string = "JOIN #" + data.channel + " " + data.user 
         elif data.type == 'part':

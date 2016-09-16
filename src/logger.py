@@ -14,6 +14,9 @@ class Logger(BotModule):
     @parse_wrapper
     def parse(self, data):
         """Parse chat data and log it"""
+        if data.type not in self.config['types_to_log']:
+            return
+
         current_time = dt.strftime(dt.utcnow(), self.config['time_format'])
         
         if data.type == 'privmsg':

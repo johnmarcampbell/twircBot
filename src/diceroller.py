@@ -26,12 +26,20 @@ class DiceRoller(BotModule):
             modifier = 0
 
             if dice_roll_match:
+                (pool, die, plus_or_minus, modifier) = dice_roll_match.groups()
                 total = self.roll_dice(dice_roll_match)
-                self.host.privmsg(data.channel, str(total))
+                result_string = pool + 'd' + die
+
+                if plus_or_minus and modifier:
+                    result_string += plus_or_minus + modifier
+
+                result_string += ' = ' + str(total)
+                self.host.privmsg(data.channel, '@' + data.user + ' ' + result_string)
 
             if coin_flip_match:
                 heads_or_tails = self.flip_coin()
                 self.host.privmsg(data.channel, heads_or_tails)
+                self.host.privmsg(data.channel, '@' + data.user + ' ' + heads_or_tails)
 
         
     def roll_dice(self, dice_roll_match):

@@ -34,6 +34,8 @@ class Logger(BotModule):
             log_string = "CAP #" + data.content
         elif data.type == 'greet':
             log_string = "GREET #" + data.content
+        elif data.type == 'userstate':
+            log_string = "USERSTATE #" + data.content
         elif data.type == 'roomstate':
             log_string = "ROOMSTATE #" + data.content
         elif data.type == 'unknown':

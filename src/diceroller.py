@@ -17,7 +17,7 @@ class DiceRoller(BotModule):
     @parse_wrapper
     def parse(self, data):
         """Parse chat data and look for dice-rolley type messages"""
-        if data.type == 'privmsg':
+        if (data.type == 'privmsg') or (data.type == 'whisper'):
             dice_roll_match = re.search(self.dice_roll_string, data.content)
             coin_flip_match = re.search(self.coin_flip_string, data.content)
             number_of_dice = 0
@@ -34,12 +34,20 @@ class DiceRoller(BotModule):
                     result_string += plus_or_minus + modifier
 
                 result_string += ' = ' + str(total)
-                self.host.privmsg(data.channel, '@' + data.user + ' ' + result_string)
+
+                if data.type == 'privmsg':
+                    self.host.privmsg(data.channel, '@' + data.user + ' ' + result_string)
+                else:
+                    self.host.whisper(data.user, result_string)
+
 
             if coin_flip_match:
                 heads_or_tails = self.flip_coin()
-                self.host.privmsg(data.channel, heads_or_tails)
-                self.host.privmsg(data.channel, '@' + data.user + ' ' + heads_or_tails)
+
+                if data.type == 'privmsg':
+                    self.host.privmsg(data.channel, '@' + data.user + ' ' + heads_or_tails)
+                else:
+                    self.host.whisper(data.user, heads_or_tails)
 
         
     def roll_dice(self, dice_roll_match):

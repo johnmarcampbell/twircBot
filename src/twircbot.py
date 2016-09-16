@@ -157,6 +157,11 @@ class TwircBot(object):
         log_text = 'PRIVMSG #' + channel + ' ' + self.config['nick'] + ' (self): ' + message
         self.send(message_text)
         self.logData(log_text)
+
+    def whisper(self, user, message):
+        """Send a whisper to a user"""
+        whisper_string = '/w ' + user + ' ' + message
+        self.privmsg('jtv', whisper_string)
     
     def join(self, channel):
         """ Join a channel. """

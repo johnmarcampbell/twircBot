@@ -9,7 +9,7 @@ class Logger(BotModule):
     def __init__(self, name):
         """Init function for Logger"""
         BotModule.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultLogger.config')
+        self.config = self.config_manager.parse_file('src/config/defaultLogger.config')
 
     @parse_wrapper
     def parse(self, data):

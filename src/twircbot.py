@@ -20,7 +20,7 @@ class TwircBot(object):
         self.bornTime = dt.utcnow()
         self.suite_list = []
         reader = cr()
-        self.config = reader.parse_file("config/default.config")
+        self.config = reader.parse_file('src/config/default.config')
         if( config_file_name ):
             self.config = reader.parse_file(config_file_name)
 

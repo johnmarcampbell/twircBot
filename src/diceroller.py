@@ -9,7 +9,7 @@ class DiceRoller(BotModule):
     def __init__(self, name):
         """Initialize some variables"""
         BotModule.__init__(self, name)
-        self.config = self.config_manager.parse_file('config/defaultDiceRoller.config')
+        self.config = self.config_manager.parse_file('src/config/defaultDiceRoller.config')
         random.seed()
         self.dice_roll_string = '\\' + self.config['invoke_string'] + self.config['dice_roll_suffix']
         self.coin_flip_string = '\\' + self.config['invoke_string'] + self.config['coin_flip_suffix']

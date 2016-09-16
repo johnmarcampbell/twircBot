@@ -19,12 +19,12 @@ class ConnectivityMonitor(BotModule):
         """Parse chat data and log it"""
         self.last_data = dt.utcnow()
 
-        if data.type == 'privmsg':
+        if (data.type == 'privmsg') or (data.type == 'whisper'):
             uptime_match = re.search(self.uptime_string, data.content)
 
             if uptime_match:
                 uptime_message = 'Uptime: ' + str(self.lifetime)
-                self.host.privmsg(data.channel, uptime_message)
+                self.reply(data, uptime_message)
 
     def check_timers(self):
         """Function to check timers"""

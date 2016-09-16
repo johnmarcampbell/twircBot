@@ -23,7 +23,7 @@ class ConnectivityMonitor(BotModule):
             uptime_match = re.search(self.uptime_string, data.content)
 
             if uptime_match:
-                uptime_message = 'Uptime: ' + str(self.lifetime)
+                uptime_message = 'Uptime: ' + self.pretty_timedelta(self.lifetime)
                 self.reply(data, uptime_message)
 
     def check_timers(self):
@@ -41,3 +41,37 @@ class ConnectivityMonitor(BotModule):
 
         if self.lifetime.seconds > self.config['stayalive_timer'] and self.config['stayalive_timer'] > 0:
             self.host.stayAlive = False
+
+    def pretty_timedelta(self, t_delta):
+        """Turn a timedelta object into a nicely formatted string"""
+        (hours, hours_remainder) = (int(t_delta.seconds / 3600), t_delta.seconds % 3600)
+        (minutes, seconds) = (int(hours_remainder / 60), hours_remainder % 60)
+        
+        # Round to the nearest second
+        if t_delta.microseconds >= 0.5:
+            seconds += 1
+
+        pretty_string = ''
+
+        if t_delta.days > 0:
+            pretty_string += '{0!s} days, '.format(t_delta.days)
+
+        # Make sure values are correcty padded
+        if hours >= 10:
+            hours = str(hours)
+        else:
+            hours = '0' + str(hours)
+
+        if minutes >= 10:
+            minutes = str(minutes)
+        else:
+            minutes = '0' + str(minutes)
+
+        if seconds >= 10:
+            seconds = str(seconds)
+        else:
+            seconds = '0' + str(seconds)
+
+        pretty_string += '{0}:{1}:{2} [hh:mm:ss]'.format(hours, minutes, seconds)
+
+        return pretty_string

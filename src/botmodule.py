@@ -17,6 +17,14 @@ class BotModule(object):
 
         self.data = data
 
+    def reply(self, in_message, out_message):
+        """Send an @-reply to a PRIVMSG or a whisper reply to a WHISPER"""
+        if in_message.type == 'privmsg':
+            reply_string = '@' + in_message.user + ' ' + out_message
+            self.host.privmsg(in_message.channel, reply_string)
+        elif in_message.type == 'whisper':
+            self.host.whisper(in_message.user, out_message)
+
     def finish(self):
         """Function that gets called as TwircBot is shutting down"""
         

@@ -34,21 +34,11 @@ class DiceRoller(BotModule):
                     result_string += plus_or_minus + modifier
 
                 result_string += ' = ' + str(total)
-
-                if data.type == 'privmsg':
-                    self.host.privmsg(data.channel, '@' + data.user + ' ' + result_string)
-                else:
-                    self.host.whisper(data.user, result_string)
+                self.reply(data, result_string)
 
 
             if coin_flip_match:
-                heads_or_tails = self.flip_coin()
-
-                if data.type == 'privmsg':
-                    self.host.privmsg(data.channel, '@' + data.user + ' ' + heads_or_tails)
-                else:
-                    self.host.whisper(data.user, heads_or_tails)
-
+                self.reply(data, self.flip_coin())
         
     def roll_dice(self, dice_roll_match):
         """Function to roll a dice pool"""

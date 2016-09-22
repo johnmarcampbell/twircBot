@@ -187,10 +187,17 @@ class TwircBot(object):
             if data.type == 'ping':
                 self.pong()
 
-    def logData(self, data):
+            self.logData(data.raw, True)
+
+    def logData(self, data, raw = False):
         """ Timestamps a line of output and send it to the logfile """
         current_time = dt.strftime(dt.utcnow(), self.config['time_format'])
-        log_file = open(self.config['log'],"a")
+
+        if raw:
+            log_file = open(self.config['raw_log'],"a")
+        else:
+            log_file = open(self.config['log'],"a")
+
         log_file.write(current_time + " " + data + "\n")
         log_file.close()
 

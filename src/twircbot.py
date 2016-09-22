@@ -162,10 +162,15 @@ class TwircBot(object):
         """Send a whisper to a user"""
         whisper_string = '/w ' + user + ' ' + message
         self.privmsg('jtv', whisper_string)
-    
+
+    def get_mods(self, channel):
+        """Get a list of moderators in a given channel"""
+        self.privmsg(channel, '/mods')
+
     def join(self, channel):
         """ Join a channel. """
         self.send('JOIN #' + channel)
+        self.privmsg(channel, '/mods')
     
     def part(self, channel):
         """ Leave a channel. """

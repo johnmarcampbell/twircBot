@@ -181,7 +181,6 @@ class TwircBot(object):
         for data in server_block.message_list:
             if data.type == 'ping':
                 self.pong()
-                self.logData('PONG')
 
     def logData(self, data):
         """ Timestamps a line of output and send it to the logfile """

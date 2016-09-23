@@ -7,7 +7,7 @@ The TWitch IRC Bot is a basic bot that connects to [Twitch.tv](https://www.twitc
 twircBot can be run by simply using the ``start()`` method.  
 
 ```python  
-from TwircBot import TwircBot  
+from twircbot.twircbot import TwircBot  
 TwircBot().start()  
 ```  
 

@@ -19,10 +19,14 @@ class TwircBot(object):
         self.isConnected = False
         self.bornTime = dt.utcnow()
         self.suite_list = []
-        reader = cr()
-        self.config = reader.parse_file('twircbot/config/default.config')
+
+        # Read configuration files
+        self.reader = cr()
+        self.config = self.reader.parse_file('twircbot/config/default.config', True)
         if( config_file_name ):
-            self.config = reader.parse_file(config_file_name)
+            self.reader.parse_file(config_file_name)
+        if type(self).__name__ in self.reader.configs.keys():
+            self.config.update(self.reader.configs[type(self).__name__])
 
         self.parser = dp(self.config['nick'])
 

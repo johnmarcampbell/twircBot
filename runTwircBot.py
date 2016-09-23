@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from src.twircbot import TwircBot
-from src.diceroller import DiceRoller
-from src.connectivitymonitor import ConnectivityMonitor
-from src.logger import Logger
+from twircbot.twircbot import TwircBot
+from twircbot.diceroller import DiceRoller
+from twircbot.connectivitymonitor import ConnectivityMonitor
+from twircbot.logger import Logger
 import sys
 
 try:

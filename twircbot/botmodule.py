@@ -10,7 +10,7 @@ class BotModule(object):
         self.name = name
         self.config = {}
         self.config_manager = ConfigReader()
-        self.config = self.config_manager.parse_file('src/config/defaultBotModule.config')
+        self.config = self.config_manager.parse_file('twircbot/config/defaultBotModule.config')
 
     def parse(self, data):
         """Test method for this module"""

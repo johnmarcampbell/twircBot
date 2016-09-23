@@ -1,5 +1,5 @@
 import re
-from src.configreader import ConfigReader
+from .configreader import ConfigReader
 
 class ServerBlock(object):
     """Object that represents a processed block of data from the Twitch IRC server"""
@@ -40,7 +40,7 @@ class DataParser(object):
     
         self.config = {}
         self.config_manager = ConfigReader()
-        self.config = self.config_manager.parse_file('src/config/twitchtools.config')
+        self.config = self.config_manager.parse_file('twircbot/config/twitchtools.config')
         self.nick = nick
         self.config['name_list_string'] = ':' + nick + self.config['name_list_prefix'] + nick + self.config['name_list_suffix']
         self.config['name_list_end_string'] = ':' + nick + self.config['name_list_end_prefix'] + nick + self.config['name_list_end_suffix']

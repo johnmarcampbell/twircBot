@@ -9,7 +9,7 @@ class ConnectivityMonitor(BotModule):
     def __init__(self, name):
         """Init function for ConnectivityMonitor"""
         BotModule.__init__(self, name)
-        self.config = self.config_manager.parse_file('src/config/defaultConnectivityMonitor.config')
+        self.config = self.config_manager.parse_file('twircbot/config/defaultConnectivityMonitor.config')
         self.uptime_string = '\\' + self.config['invoke_string'] + self.config['uptime_suffix']
         self.bornTime = dt.utcnow()
         self.last_data = dt.utcnow()

@@ -217,5 +217,9 @@ class TwircBot(object):
         self.suite_list.append(suite)
         suite.set_host(self)
         suite_type = type(suite).__name__
+        if suite_type in self.reader.configs.keys():
+            suite.config.update(self.reader.configs[suite_type])
+        if suite.name in self.reader.configs.keys():
+            suite.config.update(self.reader.configs[suite.name])
         message = "Adding suite (name - type): " + suite.name + " - " + suite_type
         self.logData(message)

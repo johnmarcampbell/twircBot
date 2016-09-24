@@ -43,6 +43,8 @@ class Logger(BotModule):
             log_string = "USERSTATE #" + data.content
         elif data.type == 'roomstate':
             log_string = "ROOMSTATE #" + data.content
+        elif data.type == 'notice':
+            log_string = 'NOTICE #' + data.channel + ': ' + data.content
         elif data.type == 'unknown':
             log_string = "UNKNOWN #" + data.raw
         else:

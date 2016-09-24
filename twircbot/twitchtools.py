@@ -70,6 +70,7 @@ class DataParser(object):
             cap_match = re.search(self.config['cap_string'], line)
             roomstate_match = re.search(self.config['roomstate_string'], line)
             userstate_match = re.search(self.config['userstate_string'], line)
+            notice_match = re.search(self.config['notice_string'], line)
 
             if privmsgMatch:
                 user = privmsgMatch.group(1)
@@ -126,6 +127,11 @@ class DataParser(object):
             elif userstate_match:
                 content = userstate_match.group(1)
                 data_type = 'userstate'
+
+            elif notice_match:
+                channel = notice_match.group(1)
+                content = notice_match.group(2)
+                data_type = 'notice'
 
             else:
                 data_type = 'unknown'

@@ -17,8 +17,8 @@ class testLogger(unittest.TestCase):
         self.log.config['log'] = self.log_file
         self.data_type_list = ['privmsg', 'whisper', 'join', 'part', 'mode',
                                 'ping', 'names_start', 'names_end', 'cap', 
-                                'greet', 'userstate', 'roomstate', 'unknown',
-                                'super_unknown']
+                                'greet', 'userstate', 'roomstate', 'notice',
+                                'unknown', 'super_unknown']
 
         # Create a bunch of ServerData's and add them to a ServerBlock
         (channel, user, content) = ('testChannel', 'testUser', 'testContent')
@@ -46,6 +46,8 @@ class testLogger(unittest.TestCase):
                             channel = channel, user = user, content = content)
         self.roomstate = ServerData(d_type = 'roomstate',
                             channel = channel, user = user, content = content)
+        self.notice = ServerData(d_type = 'notice',
+                            channel = channel, user = user, content = content)
         self.unknown = ServerData(d_type = 'unknown',
                             channel = channel, user = user, content = content)
         self.super_unknown = ServerData('Raw data', d_type = 'super_unknown',
@@ -54,7 +56,7 @@ class testLogger(unittest.TestCase):
         data_list = [self.privmsg, self.whisper, self.join, self.part,
                     self.mode, self.ping, self.names_start, self.names_end,
                     self.cap, self.greet, self.userstate, self.roomstate,
-                    self.unknown, self.super_unknown]
+                    self.notice, self.unknown, self.super_unknown]
         self.block = ServerBlock('', data_list)
 
         self.privmsg_string = 'PRIVMSG #testChannel testUser: testContent'
@@ -69,6 +71,7 @@ class testLogger(unittest.TestCase):
         self.greet_string = 'GREET #testContent'
         self.userstate_string = 'USERSTATE #testContent'
         self.roomstate_string = 'ROOMSTATE #testContent'
+        self.notice_string = 'NOTICE #testChannel: testContent'
         self.unknown_string = 'UNKNOWN #'
         self.super_unknown_string = 'Raw data'
 
@@ -106,6 +109,7 @@ class testLogger(unittest.TestCase):
         exemplar_string += now + self.greet_string + '\n'
         exemplar_string += now + self.userstate_string + '\n'
         exemplar_string += now + self.roomstate_string + '\n'
+        exemplar_string += now + self.notice_string + '\n'
         exemplar_string += now + self.unknown_string + '\n'
         exemplar_string += now + self.super_unknown_string + '\n'
 
